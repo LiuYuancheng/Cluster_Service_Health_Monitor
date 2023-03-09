@@ -36,12 +36,12 @@ if os.path.exists(gLibDir):
 import Log
 Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
 
-import ConfigLoader
-gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
-iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
-if iConfigLoader is None:
-    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
-    exit()
+#import ConfigLoader
+#gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
+#iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
+#if iConfigLoader is None:
+#    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
+#    exit()
 
 #CONFIG_DICT = iConfigLoader.getJson()
 
@@ -57,6 +57,11 @@ LOG_INFO = 0
 LOG_WARN = 1
 LOG_ERR = 2
 LOG_EXCEPT = 3
+
+PROB_TP_LOCAL = 0   # Prob touch the current node 
+
+# the UDP ports
+UDP_PORT = 3001
 
 #-------<GLOBAL VARIABLES (start with "g")>-------------------------------------
 def gDebugPrint(msg, prt=True, logType=None):
