@@ -163,7 +163,7 @@ def testCase(mode):
         result = driver.checkNTPService("sg.pool.ntp.org")
 
     elif mode ==3:
-        result1 = driver.nmapPorts('172.18.178.6', [22, 80, 443, 8008])
+        result1 = driver.nmapPorts('172.18.178.6', ['22-23', 80, 443, 8008])
         print(result1)
         result = driver.nmapPorts('172.18.178.7', [22, 80, 443, 8080])
     elif mode ==4:
@@ -175,4 +175,4 @@ def testCase(mode):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
-    testCase(4)
+    testCase(3)
