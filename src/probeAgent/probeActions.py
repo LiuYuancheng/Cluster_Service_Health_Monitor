@@ -21,18 +21,8 @@ import socket
 
 import ntplib
 from pythonping import ping
-
-
 import probeGlobal as gv
 import Log
-
-#nm = nmap.PortScanner()
-#nm.scan('172.18.178.6', '22,443,99')
-
-#print( nm['172.18.178.6']['tcp'][22]['state'])
-#print( nm['172.18.178.6']['tcp'][443]['state'])
-#print( nm['172.18.178.6']['tcp'][99]['state'])
-#print(nm['172.18.178.6'].tcp(99))
 
 #-----------------------------------------------------------------------------
 class probeNetworkDriver(object):
@@ -40,6 +30,7 @@ class probeNetworkDriver(object):
     def __init__(self) -> None:
         self.tcpPortChecker = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ntpClient = ntplib.NTPClient()
+        self.scanner = nmap.PortScanner()
 
 #-----------------------------------------------------------------------------
     def checkPing(self, target, timeout=0.5):
@@ -51,6 +42,36 @@ class probeNetworkDriver(object):
         except Exception as err:
             gv.gDebugPrint("Ping target [%s] not pingable" %str(target), gv.LOG_ERR)
             Log.exception(err)
+        return resultDict
+    
+#-----------------------------------------------------------------------------
+    def _parseNmapDict(self, nmapDict, protocalType='tcp'):
+        resultDict = {}
+        if protocalType in nmapDict.keys():
+            nmapInfo = nmapDict[protocalType]
+            for port, state in nmapInfo.items():
+                serviceName = state['name'] if 'name' in state.keys() else 'None'
+                isopen = state['state'] == 'open' if 'state' in state.keys() else False
+                resultDict[str(port)] = (isopen, serviceName)
+        return resultDict
+
+#-----------------------------------------------------------------------------
+    def fastScan(self, target):
+        resultDict = {'target': target}
+        self.scanner.scan(hosts=target, arguments='-F')
+        nmapInfo = self.scanner[str(target)]
+        resultDict.update(self._parseNmapDict(nmapInfo, 'tcp'))
+        return resultDict
+        
+#-----------------------------------------------------------------------------
+    def nmapPorts(self, target, portList):
+        resultDict = {'target': target}
+        for i in portList:
+            resultDict[str(i)] = (False, 'None') 
+        argStr = '-p ' + ','.join([str(i) for i in portList])
+        self.scanner.scan(hosts=target, arguments=argStr)
+        nmapInfo = self.scanner[str(target)]
+        resultDict.update(self._parseNmapDict(nmapInfo, 'tcp'))
         return resultDict
 
 #----------------------------------------------------------------------------- 
@@ -141,6 +162,12 @@ def testCase(mode):
         result = driver.checkNTPService("www.google.com")
         result = driver.checkNTPService("sg.pool.ntp.org")
 
+    elif mode ==3:
+        result1 = driver.nmapPorts('172.18.178.6', [22, 80, 443, 8008])
+        print(result1)
+        result = driver.nmapPorts('172.18.178.7', [22, 80, 443, 8080])
+    elif mode ==4:
+        result = driver.fastScan('172.18.178.6')
 
     print(result)
 
@@ -148,4 +175,4 @@ def testCase(mode):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
-    testCase(1)
+    testCase(4)
