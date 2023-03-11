@@ -79,7 +79,8 @@ class nmapScanner(object):
             target = '127.0.0.1' if str(target).strip().lower() == 'localhost' else str(target).strip()
             self.resultDict = {'target': target, 'state': STATE_DOWN}
             # Call the detail scan function to update the <self.resultDict>
-            scanFunction(self, target, portInfo, showFiltered=showFiltered)
+            # [*set(portInfo)] : remove the duplicate in the list [80, 80] => [80]
+            scanFunction(self, target, [*set(portInfo)], showFiltered=showFiltered)
             if target in self.scanner.all_hosts():
                 nmapInfo = self.scanner[str(target)]
                 self.resultDict['state'] = nmapInfo.state()
@@ -130,7 +131,7 @@ class nmapScanner(object):
 #-----------------------------------------------------------------------------
     @scanPortDecorator
     def scanPortRange(self, target, portRange, showFiltered=False):
-        """ Scan a port range 
+        """ Scan a port range and return the result.
 
             Args:
                 target (str): target IP address/Url.
@@ -160,8 +161,7 @@ class nmapScanner(object):
     
 #-----------------------------------------------------------------------------
     def fastScan(self, target):
-        """ fast Scan a target, same as the cmd: nmap -F <ip>
-        """
+        """ fast Scan a target, same as the cmd: nmap -F <ip> """
         return self._fastScanTarget(target, None)
     
     @scanPortDecorator
@@ -170,20 +170,33 @@ class nmapScanner(object):
 
 #-----------------------------------------------------------------------------
     def scanServices(self, target, serviceList):
-        #resultDict = {'target': None, state}
-        
-        
-        self._scanServices(target, serviceList)
-        #for item in resultDict.items():
-        #    key, val = item
-        #    serviceType = val[-1]
-        #    if serviceType in resultDict.keys():
-        #        if not isinstance(resultDict[serviceType], dict):     
-        #            resultDict[serviceType] = dict()
-        #        resultDict[serviceType].update(item)
-        #        resultDict.pop(key)
-        #return resultDict
+        """ Check a list of service type.
+            Args:
+                target (_type_): arget IP address/Url.
+                serviceList (_type_): service list. 
 
+            Returns:
+                _type_: example:
+                {   'target': '127.0.0.1', 
+                    'state': 'up', 
+                    'http': { '80': ('closed', 'http'),'8008': ('closed', 'http')}, 
+                    'https': {'443': ('open', 'https')}
+                }
+            """
+        resultDict = {'target': None, 'state': None}
+        for se in serviceList:
+            resultDict[str(se)] = {}
+        self._scanServices(target, serviceList)
+        resultDict['target'] = self.resultDict['target']
+        resultDict['state'] = self.resultDict['state']
+        for item in self.resultDict.items():
+            key, val = item
+            if isinstance(val, tuple):
+                serviceType = val[-1]
+                if serviceType in resultDict.keys():
+                    resultDict[serviceType][key] = val
+        return resultDict
+         
     @scanPortDecorator
     def _scanServices(self, target, serviceList, showFiltered=False):
         #argStr = '-p ' + ','.join([str(i) for i in serviceList])
@@ -219,7 +232,7 @@ def testCase(mode):
         print('\t', rst)
     elif mode == 4:
         print(' - 7.Scan service')
-        rst = scanner.scanServices('localhost', ['http', 'https'])
+        rst = scanner.scanServices('localhost', ['http', 'http', 'ppp', 'https'])
         print('\t', rst)
     elif mode == 5:
         print(' - 7.Scan service')
