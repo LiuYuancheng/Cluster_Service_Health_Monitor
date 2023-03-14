@@ -149,8 +149,11 @@ class localServiceProber(Prober):
         if 'dir' in configDict.keys():
             for dirPath in configDict['dir']:
                 dirPath = r'{}'.format(dirPath)
-                resultDict['dir'][dirPath] = os.listdir(dirPath)
-
+                try:
+                    resultDict['dir'][dirPath] = None
+                    if os.path.exists(dirPath): resultDict['dir'][dirPath] = os.listdir(dirPath)
+                except Exception as err:
+                    self._debugPrint("Error to ls dir [%s] : %s" %(dirPath, err), logType=self._logException)
         return resultDict
 
 #-----------------------------------------------------------------------------
@@ -158,6 +161,7 @@ class localServiceProber(Prober):
         self.resultDict['time'] = time.time()
         self.resultDict.update(self.getResUsage(configDict=configDict))
         self.resultDict.update(self.getProcessState(configDict=configDict))
+        self.resultDict.update(self.getDirFiles(configDict=configDict))
 
 #----------------------------------------------------------------------------- 
 #-----------------------------------------------------------------------------
@@ -186,21 +190,34 @@ def testCase(mode):
                 'disk': ['C:'],
                 'network': {'connCount': 0}
             }
-        driver.updateResUsage(configDict=configDict)
-        result = driver.getLastResult()
+        result = driver.getResUsage(configDict=configDict)
+
     elif mode == 1:
         configDict =  {
                 'process': {'count': 0, 'filter': ['python.exe', 'Fing.exe']},
             }
         result = driver.getProcessState(configDict=configDict)
-    elif mode ==2:
+    elif mode == 2:
         configDict =  {
-            'dir': [r'C:\Works\NCL\Project\Openstack_Config\GPU'],
+            'dir': [r'C:\Works\NCL\Project\Openstack_Config\GPU', 'M:'],
         }
         result = driver.getDirFiles(configDict=configDict)
+    elif mode == 3:
+        configDict =  {
+                'cpu': {'interval': 0.1, 'percpu': True},
+                'ram': 0,
+                'user': None,
+                'disk': ['C:'],
+                'network': {'connCount': 0},
+                'process': {'count': 0, 'filter': ['python.exe', 'Fing.exe']},
+                'dir': [r'C:\Works\NCL\Project\Openstack_Config\GPU', 'M:'],
+            }
+        driver.updateResUsage(configDict=configDict)
+        result = driver.getLastResult()
+
     print(result)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
-    testCase(2)
+    testCase(3)

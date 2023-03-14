@@ -22,6 +22,8 @@ import probeGlobal as gv
 import dataManager
 import Log
 
+import nmapUtils
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 
@@ -52,8 +54,7 @@ class Prober(object):
         for probSet in self.probActionDict.items():
             actId, probAct = probSet
             self.crtResultDict[actId]['time'] = time.time()
-            probAct.run()
-            self.crtResultDict[actId]['result'] = probAct.getResult()
+            self.crtResultDict[actId]['result'] = probAct()
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------
@@ -102,12 +103,18 @@ class ProbeAgent(object):
 #-----------------------------------------------------------------------------
 def main():
     agnet = ProbeAgent('127.0.0.1')
-    prob1 = Prober('1')
-    probFunc1 = probeFunc0()
-    prob1.addProbAction(probFunc1)
-    agnet.addProber(prob1)
-    #agnet.executeProbers()
+    # create the scanner.
+    #scanner = nmapUtils.nmapScanner()
+    def shoutPint(): 
+        print("123123")
+        return "123"
+
+    prober1 = Prober('1', target='localHost')
+    prober1.addProbAction(shoutPint)
+
+    agnet.addProber(prober1)
     agnet.startRun()
+
     print('Finish')
 
 #-----------------------------------------------------------------------------

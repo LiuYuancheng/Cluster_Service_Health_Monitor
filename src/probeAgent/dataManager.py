@@ -55,4 +55,5 @@ class DataManager(threading.Thread):
     #-----------------------------------------------------------------------------
     def archiveResult(self, resultDict):
         pass
+        print(resultDict)
         return None
