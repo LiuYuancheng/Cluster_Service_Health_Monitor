@@ -13,7 +13,6 @@
 # License:     n.a
 #-----------------------------------------------------------------------------
 
-import time
 import socket
 import urllib.request
 
@@ -40,7 +39,7 @@ class Prober(object):
     def _debugPrint(self, msg, prt=True, logType=None):
         if prt: print(msg)
         if not self._debugLogger: return 
-        if logType.lower() == self._logWarning:
+        if logType == self._logWarning:
             self._debugLogger.warning(msg)
         elif logType == self._logError:
             self._debugLogger.error(msg)
@@ -151,13 +150,28 @@ class networkServiceProber(Prober):
 
 #----------------------------------------------------------------------------- 
     def checkHttpConn(self, target, requestConfig, timeout=3):
+        """ Check a http/https service is connectable.
+            Args:
+                target (str): IP-address/domain-name
+                requestConfig (dict): { 'conn': <'http'/'https'>, 
+                                        'port': <int>, 
+                                        'req':  <Request type str ('GET. 'HEAD'')>, 
+                                        'par' : <request parameter str('/')>}
+                timeout (int, optional): connection timeout. Defaults to 3.
+
+            Returns:
+                dict: { target': target, 
+                        'conn': 'http',
+                        'port': 80 
+                        '<req>:<par>' :(status, reason)}
+        """
         target = self._parseTarget(target)
         #target = target.replace('http', 'https') if 'http://' in target else 'https://' + target
         resultDict = {  'target': target, 
                         'conn': 'http',
                         'port': 80 }
         if 'conn' in requestConfig.keys(): resultDict['conn'] = str(requestConfig['conn']).lower()
-        if 'port' in requestConfig.keys(): resultDict['port'] = requestConfig['port']
+        if 'port' in requestConfig.keys(): resultDict['port'] = int(requestConfig['port'])
         conn = http.client.HTTPSConnection(target, resultDict['port'], timeout) if resultDict['conn'] == 'https' else http.client.HTTPConnection(
             target, resultDict['port'], timeout)
         req = requestConfig['req'] if 'req' in requestConfig.keys() else 'HEAD'
@@ -168,12 +182,21 @@ class networkServiceProber(Prober):
             rst = conn.getresponse()
             resultDict[':'.join((req, par))] = (rst.status, rst.reason)
         except Exception as error:
-            gv.gDebugPrint("Error when connect to the target: %s " %str(error), logType=gv.LOG_EXCEPT)
+            self._debugPrint("Error when connect to the target: %s " %str(target), logType=self._logException)
         if conn: conn.close()
         return resultDict
 
 #----------------------------------------------------------------------------- 
     def checkFtpConn(self, target, loginConfig=None, timeout=3):
+        """ Check a ftp service is connectable.
+            Args:
+                target (str): IP-address/domain-name
+                loginConfig (dict, optional): {'user':<str>, 'password':<str>}. Defaults to None.
+                timeout (int, optional): connection timeout.. Defaults to 3.
+
+            Returns:
+                _type_: { 'target': <target>, 'conn': False, 'login': <Login state> }
+        """
         target = self._parseTarget(target)
         resultDict = { 'target': target, 'conn': False, 'login': False }
         try:
@@ -183,38 +206,60 @@ class networkServiceProber(Prober):
             logResp = ftpClient.login(user=loginConfig['user'], passwd=loginConfig['password']) if loginConfig else ftpClient.login()
             resultDict['login'] = logResp
         except Exception as err:
-            gv.gDebugPrint("Error to connect to the FTP server: %s" %str(err), gv.LOG_EXCEPT)
+            self._debugPrint("Error to connect to the FTP server: %s" %str(err), self._logException)
         return resultDict
 
 #----------------------------------------------------------------------------- 
     def checkUrlsConn(self, urlList):
-        resultDict = { 'target': None }
+        """ Check whether a list of url can be opened.
+            Args:
+                    urlList (list): urllist
+            Returns:
+                dict: {target: 'urlList', <url1>:<state>, ...}
+        """
+        resultDict = { 'target': 'urlList' }
         for url in urlList:
             resultDict[str(url)] = False
             try:
                 _ = urllib.request.urlopen(url)
                 resultDict[str(url)] = True
             except Exception as err:
-                gv.gDebugPrint("Url [%s] can not be opened" %url, gv.LOG_WARN)
+                self._debugPrint("Url [%s] can not be opened" %url, self._logWarning)
         return resultDict
-    
+
+#----------------------------------------------------------------------------- 
 #-----------------------------------------------------------------------------
 def testCase(mode):
+    # Init the logger;
+    import os, sys
+    import Log
+    DIR_PATH = dirpath = os.path.dirname(__file__)
+    TOPDIR = 'src'
+    LIBDIR = 'lib'
+    idx = dirpath.find(TOPDIR)
+    gTopDir = dirpath[:idx + len(TOPDIR)] if idx != -1 else dirpath   # found it - truncate right after TOPDIR
+    # Config the lib folder 
+    gLibDir = os.path.join(gTopDir, LIBDIR)
+    if os.path.exists(gLibDir):
+        sys.path.insert(0, gLibDir)
+    APP_NAME = ('TestCaseLog', 'networkServiceProber')
+    import Log
+    Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
 
-    driver = networkServiceProber()
+
+    driver = networkServiceProber(debugLogger=Log)
     if mode == 0:
         result = driver.checkPing('172.18.178.6')
-
     if mode == 1:
         result = driver.checkTcpConn('172.18.178.6', [22, 23])
 
     elif mode ==2:
-        result = driver.checkNtpConn('0.sg.pool.ntp.org', pingFlg=True, portFlg=True)
+        result = driver.checkNtpConn('0.sg.pool.ntp.org', pingFlg=False, portFlg=False)
     
     elif mode ==3:
         testhttpCofig = {
             'target': '127.0.0.1',
-            'port': 8080,
+            'port': 3000,
             'conn': 'http',
             'req': 'HEAD',
             'par': '/'
@@ -234,21 +279,6 @@ def testCase(mode):
     elif mode == 5:
         testList = ['https://www.google.com/', '123123']
         result = driver.checkUrlsConn(testList)
-
-    # elif mode ==1:
-    #     result = driver.checkTcpPorts('172.18.178.6', [22, 80, 443, 8080], timeout=3)
-    #     # result = driver.checkTcpPorts('sg.pool.ntp.org', [123])
-    # elif mode ==2:
-    #     result = driver.checkNTPService("www.google.com")
-    #     result = driver.checkNTPService("sg.pool.ntp.org")
-
-    # elif mode ==3:
-    #     result1 = driver.nmapPorts('172.18.178.6', ['22-23', 80, 443, 8008])
-    #     print(result1)
-    #     result = driver.nmapPorts('172.18.178.7', [22, 80, 443, 8080])
-    # elif mode ==4:
-    #     result = driver.fastScan('172.18.178.6')
-
     print(result)
 
 
