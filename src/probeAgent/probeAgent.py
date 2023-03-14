@@ -20,7 +20,6 @@ from collections import OrderedDict
 
 import probeGlobal as gv
 import dataManager
-from probeActions import probeFunc0
 import Log
 
 #-----------------------------------------------------------------------------
