@@ -1,53 +1,78 @@
 #-----------------------------------------------------------------------------
-# Name:        scheduler.py
+# Name:        networkServiceProber.py
 #
-# Purpose:     This module is a script use python <schedule> module to manage
-#              the regular or random tasks (call the different actor modules to
-#              simulate a normal user's daily action, generate random network
-#              comm traffic or local operation event).
-#              <schedule> reference link: https://schedule.readthedocs.io/en/stable/
+# Purpose:     This module is prober function module used to check the target 
+#              nodes service state through the network connection. The service
+#              can be checked contents: NTP, http, https, FTP
 #
 # Author:      Yuancheng Liu
 #
 # Version:     v_0.2
-# Created:     2022/12/09
+# Created:     2023/03/11
 # Copyright:   n.a
 # License:     n.a
 #-----------------------------------------------------------------------------
 
-
 import time
 import socket
-import http.client
+import urllib.request
 
 import ntplib
-from pythonping import ping
-import probeGlobal as gv
+import http.client
+from ftplib import FTP
 
-import nmapUtils
-import Log
+from pythonping import ping
+DEF_TIMEOUT = 3 
 
 #-----------------------------------------------------------------------------
-class probeNetworkDriver(object):
+#-----------------------------------------------------------------------------
+class Prober(object):
+    """ A simple object with a private debugPrint function. the probe lib function 
+        will be inheritance of it.
+    """
+    def __init__(self, debugLogger=None) -> None:
+        self._debugLogger = debugLogger
+        self._logInfo = 0
+        self._logWarning = 1
+        self._logError = 2
+        self._logException =3 
 
-    def __init__(self) -> None:
+    def _debugPrint(self, msg, prt=True, logType=None):
+        if prt: print(msg)
+        if not self._debugLogger: return 
+        if logType.lower() == self._logWarning:
+            self._debugLogger.warning(msg)
+        elif logType == self._logError:
+            self._debugLogger.error(msg)
+        elif logType == self._logException:
+            self._debugLogger.exception(msg)
+        elif logType == self._logInfo:
+            self._debugLogger.info(msg)
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class networkServiceProber(Prober):
+    """ 
+    """
+    def __init__(self, debugLogger=None) -> None:
+        """ Init the obj, example: driver = networkServiceProber()"""
+        super().__init__(debugLogger=debugLogger)
         self.tcpPortChecker = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ntpClient = ntplib.NTPClient()
-        self.scanner = nmapUtils.nmapScanner()
-
+        
     def _parseTarget(self, target):
+        """ Validate the input target IP-address/domain-name"""
         target = str(target).replace(' ', '')
         return '127.0.0.1' if target.lower() == 'localhost' else target
-    
+
 #-----------------------------------------------------------------------------
     def checkPing(self, target, timeout=0.5):
-        """ Check the target is pingable (ICMP service avaliable).
+        """ Check whether the target is pingable (ICMP service avaliable).
             Args:
-                target (_type_): _description_
-                timeout (float, optional): _description_. Defaults to 0.5.
-
+                target (str): IP-address/domain-name
+                timeout (float, optional): ping timeout. Defaults to 0.5.
             Returns:
-            _type_: _description_
+                dict(): {'target': '<target>', 'ping': [min(ms), avg(ms), max(ms)]} if pingable.
         """
         target = self._parseTarget(target)
         resultDict = {'target': target, 'ping': None}
@@ -56,75 +81,72 @@ class probeNetworkDriver(object):
             if data.rtt_max_ms < timeout*1000:
                 resultDict['ping'] = [data.rtt_min_ms, data.rtt_avg_ms, data.rtt_max_ms]
         except Exception as err:
-            gv.gDebugPrint("Ping target [%s] not pingable" %str(target), gv.LOG_ERR)
-            Log.exception(err)
+            self._debugPrint("Error: checkPing(): target [%s] not pingable, " %target, logType=self._logWarning)
         return resultDict
 
 #----------------------------------------------------------------------------- 
-    def checkTcpConn(self, target, portList, timeout=0.5):
-        """ Check a TCP service ports are connectable.
-
-        Args:
-            target (_type_): _description_
-            portList (_type_): _description_
-            timeout (float, optional): _description_. Defaults to 0.5.
-
-        Returns:
-            _type_: _description_
+    def checkTcpConn(self, target, portList, timeout=1):
+        """ Check a target's TCP service's ports are connectable.
+            Args:
+                target (str): IP-address/domain-name
+                portList (list): [int, ...]
+                timeout (float, optional): TCP connection timeout. Defaults to 1 sec.
+            Returns:
+                dict() : {'target': '<target>', '<port1>": True/Fase, ...}
         """
-        target = socket.gethostbyname(self._parseTarget(target)) # translate hostname to IPv4 if it is a doman
         resultDict = {'target': target}
+        try:
+            target = socket.gethostbyname(self._parseTarget(target)) # translate hostname to IPv4 if it is a doman
+        except:
+            self._debugPrint("Error: checkTcpConn() Invalid host: [%s]" %str(target), logType=self._logError)
+            return resultDict
+        
         socket.setdefaulttimeout(timeout)
         for port in portList:
             resultDict[str(port)] = False
             try:
                 result = self.tcpPortChecker.connect_ex((str(target), int(port)))
                 resultDict[str(port)] = result == 0
-            except socket.gaierror:
+            except socket.gaierror as err:
                 resultDict['target'] = None
-                gv.gDebugPrint("Hostname [%s] Could Not Be Resolved" %str(target), gv.LOG_EXCEPT)
+                self._debugPrint("Hostname [%s] Could Not Be Resolved." %str(target), logType=self._logError)
                 break
             except socket.error:
                 resultDict['target'] = None
-                gv.gDebugPrint("\n Hostip [%s] is not reponse" %str(target), gv.LOG_EXCEPT)
+                self._debugPrint("Host ip [%s] is not reponsed." %str(target), logType=self._logError)
                 break
             except Exception as err:
-                gv.gDebugPrint("Exception happens: %s" %str(err), gv.LOG_EXCEPT)
+                self._debugPrint("Exception happens: %s" %str(err), logType=self._logException)
                 continue
         return resultDict
 
 #----------------------------------------------------------------------------- 
     def checkNtpConn(self, target, pingFlg=False, portFlg=False, ntpPort=123):
-        """ Check whether a NTP(Network Time Protocol) service is avaliable. As we use the nmap
+        """ Check whether a NTP(Network Time Protocol) service is avaliable. As if we use the nmap
             to scan the port, most of the public ntp server will ban the client who did the ports
             scan for their server, so the port state may show 'down' 
 
-        Args:
-            target (_type_): _description_
-            pingFlg (bool, optional): _description_. Defaults to False.
-            portFlg (bool, optional): _description_. Defaults to False.
-            ntpPort (int, optional): _description_. Defaults to 123.
+            Args:
+                target (_type_): IP-address/domain-name
+                pingFlg (bool, optional): whether ping the server. Defaults to False.
+                portFlg (bool, optional): whether check ntp Port connectable. Defaults to False.
+                ntpPort (int, optional): ntp port. Defaults to 123.
 
-        Returns:
-            _type_: _description_
+            Returns:
+                dict() : {'target': '<target>', 'ping': [...], 'ntp': <time offset> }
         """
         target = self._parseTarget(target)
         resultDict = {'target': target, 'ping': None, 'ntp': None}
         # Check ping
         if pingFlg:resultDict.update(self.checkPing(target))
         # Check port Open
-        if portFlg:
-            result = self.scanner.scanTcpPorts(target, [
-                                               ntpPort]) if portFlg == 'nmap' else self.checkTcpConn(target, [ntpPort])
-            resultDict.update(result)
+        if portFlg: resultDict.update(self.checkTcpConn(target, [ntpPort]))
         # Fetch time offset data
         try:
             data = self.ntpClient.request(target, version=3)
             resultDict['ntp'] = data.offset
         except Exception as err:
-            gv.gDebugPrint(
-                "Time server [%s] not response" % str(target), gv.LOG_ERR)
-            Log.exception(err)
+            self._debugPrint("Time server [%s] not response" % str(target), self._logException)
         return resultDict
 
 #----------------------------------------------------------------------------- 
@@ -149,23 +171,37 @@ class probeNetworkDriver(object):
             gv.gDebugPrint("Error when connect to the target: %s " %str(error), logType=gv.LOG_EXCEPT)
         if conn: conn.close()
         return resultDict
-        
-#-----------------------------------------------------------------------------
-class probeFunc(object):
 
-    def __init__(self) -> None:
-        pass
+#----------------------------------------------------------------------------- 
+    def checkFtpConn(self, target, loginConfig=None, timeout=3):
+        target = self._parseTarget(target)
+        resultDict = { 'target': target, 'conn': False, 'login': False }
+        try:
+            ftpClient = FTP(target, timeout=timeout)
+            resultDict['conn'] = True
+            # try to login to confirm 
+            logResp = ftpClient.login(user=loginConfig['user'], passwd=loginConfig['password']) if loginConfig else ftpClient.login()
+            resultDict['login'] = logResp
+        except Exception as err:
+            gv.gDebugPrint("Error to connect to the FTP server: %s" %str(err), gv.LOG_EXCEPT)
+        return resultDict
 
-    def run(self):
-        print("this is time: %s" %str(time.time()))
-
-    def getResult(self):
-        return {'TimeStr': str(time.time())}
+#----------------------------------------------------------------------------- 
+    def checkUrlsConn(self, urlList):
+        resultDict = { 'target': None }
+        for url in urlList:
+            resultDict[str(url)] = False
+            try:
+                _ = urllib.request.urlopen(url)
+                resultDict[str(url)] = True
+            except Exception as err:
+                gv.gDebugPrint("Url [%s] can not be opened" %url, gv.LOG_WARN)
+        return resultDict
     
 #-----------------------------------------------------------------------------
 def testCase(mode):
 
-    driver = probeNetworkDriver()
+    driver = networkServiceProber()
     if mode == 0:
         result = driver.checkPing('172.18.178.6')
 
@@ -193,6 +229,12 @@ def testCase(mode):
             'par': '/horizon'
             }
         result = driver.checkHttpConn('127.0.0.1',testhttpCofig)
+    elif mode == 4:
+        result = driver.checkFtpConn('ftp.pureftpd.org')
+    elif mode == 5:
+        testList = ['https://www.google.com/', '123123']
+        result = driver.checkUrlsConn(testList)
+
     # elif mode ==1:
     #     result = driver.checkTcpPorts('172.18.178.6', [22, 80, 443, 8080], timeout=3)
     #     # result = driver.checkTcpPorts('sg.pool.ntp.org', [123])
@@ -213,4 +255,4 @@ def testCase(mode):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
-    testCase(3)
+    testCase(5)
