@@ -112,7 +112,7 @@ class localServiceProber(Prober):
         if 'disk' in configDict.keys():
             resultDict['disk'] = {} 
             for diskTag in configDict['disk']:
-                resultDict['disk'][diskTag] = psutil.disk_usage(diskTag).percent
+                resultDict['disk'][diskTag] = psutil.disk_usage(diskTag).percent if os.path.exists(diskTag) else 0
         
         # Check network conntion
         if 'network' in configDict.keys():

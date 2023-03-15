@@ -19,12 +19,13 @@ import time
 from collections import OrderedDict
 
 import probeGlobal as gv
-import dataManager
+# import own lib
 import Log
-
 import nmapUtils
 import networkServiceProber
 import localServiceProber
+
+import dataManager
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -112,7 +113,6 @@ def main():
     gv.iPortScanner = nmapUtils.nmapScanner()
     gv.iNetProbeDriver = networkServiceProber.networkServiceProber(debugLogger=Log)
     gv.iLocalProbeDriver = localServiceProber.localServiceProber('172.18.178.6', debugLogger=Log)
-
     agnet = ProbeAgent('172.18.178.6')
     
     # add a prober to check the Forni
