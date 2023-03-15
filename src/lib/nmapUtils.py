@@ -108,7 +108,7 @@ class nmapScanner(object):
         for i in portList:
             self.resultDict[str(i)] = (CLOSE_TAG, UNKNOWN_TAG) 
         argStr = '-p ' + ','.join([str(i) for i in portList])
-        self.scanner.scan(hosts=target, arguments=argStr)
+        self.scanner.scan(hosts=target, arguments=argStr, timeout=10)
 
     #-----------------------------------------------------------------------------
     def scanTcpPortsOld(self, target, portList, showFiltered=False):
@@ -120,7 +120,7 @@ class nmapScanner(object):
         for i in portList:
             resultDict[str(i)] = (CLOSE_TAG, UNKNOWN_TAG) 
         argStr = '-p ' + ','.join([str(i) for i in portList])
-        self.scanner.scan(hosts=target, arguments=argStr)
+        self.scanner.scan(hosts=target, arguments=argStr, timeout=10)
         if target in self.scanner.all_hosts():
             nmapInfo = self.scanner[str(target)]
             resultDict['state'] = nmapInfo.state()
@@ -142,7 +142,7 @@ class nmapScanner(object):
                 _type_: _description_
         """
         argStr = str(portRange[0])+'-'+str(portRange[1])
-        self.scanner.scan(target, argStr)
+        self.scanner.scan(target, argStr, timeout=10)
 
     #-----------------------------------------------------------------------------
     def scanPortRangeOld(self, target, portRange, showFiltered=False):
@@ -151,7 +151,7 @@ class nmapScanner(object):
         if str(target).lower() == 'localhost': target = '127.0.0.1' 
         resultDict = {'target': target, 'state': 'down'}
         argStr = str(portRange[0])+'-'+str(portRange[1])
-        self.scanner.scan(target, argStr)
+        self.scanner.scan(target, argStr, timeout=10)
         if target in self.scanner.all_hosts():
             nmapInfo = self.scanner[str(target)]
             resultDict['state'] = nmapInfo.state()
@@ -166,7 +166,7 @@ class nmapScanner(object):
     
     @scanPortDecorator
     def _fastScanTarget(self, target, portInfo, showFiltered=False):
-        self.scanner.scan(hosts=target, arguments='-F')
+        self.scanner.scan(hosts=target, arguments='-F', timeout=10)
 
 #-----------------------------------------------------------------------------
     def scanServices(self, target, serviceList):
@@ -200,7 +200,7 @@ class nmapScanner(object):
     @scanPortDecorator
     def _scanServices(self, target, serviceList, showFiltered=False):
         #argStr = '-p ' + ','.join([str(i) for i in serviceList])
-        #self.scanner.scan(hosts=target, arguments=argStr)
+        #self.scanner.scan(hosts=target, arguments=argStr, timeout=10)
         self.scanTcpPorts(target, serviceList)
 
 #-----------------------------------------------------------------------------
@@ -242,4 +242,4 @@ def testCase(mode):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
-    testCase(4)
+    testCase(0)

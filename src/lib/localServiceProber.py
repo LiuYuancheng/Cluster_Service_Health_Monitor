@@ -1,8 +1,8 @@
 #-----------------------------------------------------------------------------
 # Name:        localServiceProber.py
 #
-# Purpose:     This module is a untility module of the lib <python- psutil> to provide
-#              some extend function. 
+# Purpose:     This module is a untility module of the lib <python- psutil> to 
+#              provide some extend function. 
 #              psutil doc link: https://psutil.readthedocs.io/en/latest/#system-related-functions
 #
 # Author:      Yuancheng Liu
@@ -47,23 +47,15 @@ class Prober(object):
 class localServiceProber(Prober):
 
     def __init__(self, id, debugLogger=None) -> None:
-        """ Init the obj, example: driver = networkServiceProber()"""
+        """ Init the obj, example: driver = networkServiceProber(debugLogger=Log)"""
         super().__init__(debugLogger=debugLogger)
         self.id = id
         self.resultDict = {}
         self._initResultDict()
         
-    
     def _initResultDict(self):
-        self.resultDict = { 'target': ':'.join(('local', str(self.id))),
-                            'time': time.time()
-                           }
-
-#-----------------------------------------------------------------------------
-    def resetResult(self):
-        for key in self.resultDict.keys():
-            if key == 'target' or key == 'time': continue
-            self.resultDict[key] = None
+        self.resultDict = {'target': ':'.join(('local', str(self.id))),
+                           'time': time.time()}
 
 #-----------------------------------------------------------------------------
     def getLastResult(self):
@@ -71,10 +63,31 @@ class localServiceProber(Prober):
 
 #-----------------------------------------------------------------------------
     def getResUsage(self, configDict=None):
+        """ Get the cpu, ram, login user, disk and network connction state
+            Args:
+                configDict (dict, optional): result config dictionary, example:
+                configDict = {
+                    'cpu': {'interval': 0.1, 'percpu': False},
+                    'ram': 0,
+                    'user': None,
+                    'disk': ['C:'],
+                    'network': {'connCount': 0}
+                } .Defaults to None.
+
+        Returns:
+            dict() : The usage dict, example:
+            resultDict = {
+                'cpu': <total percent or percent list>,
+                'ram': %,
+                'user': user list,
+                'dist': {'C:' %}
+                'network': {'connCount': int }
+            }
+        """
         resultDict ={}
         if configDict is None: 
             configDict = {
-                'cpu': {'interval': None, 'percpu': False},
+                'cpu': {'interval': 0.1, 'percpu': False},
                 'ram': 0,
                 'user': None,
                 'disk': [],
@@ -110,8 +123,21 @@ class localServiceProber(Prober):
 
 #-----------------------------------------------------------------------------
     def getProcessState(self, configDict=None):
-        resultDict ={'process':{}}
-        if configDict is None: 
+        """ Get the total process number and spec process detail (name, id , users) 
+            Args:
+                configDict (dict, optional): 
+                 configDict = {
+                    'process': {
+                        'count': 0,
+                        'filter': ['python.exe']
+                    }
+                } . Defaults to None.
+
+            Returns:
+                dict() : _description_
+        """
+        resultDict = {'process': {}}
+        if configDict is None:
             configDict = {
                 'process': {
                     'count': 0,
@@ -123,24 +149,27 @@ class localServiceProber(Prober):
             if 'count' in configDict['process'].keys():
                 resultDict['process']['count'] = len(psutil.pids())
             # Check the filtered process we want to check
-            
             if 'filter' in configDict['process'].keys():
-                
                 filterDict = {}
                 for key in configDict['process']['filter']:
                     filterDict[str(key).lower()] = []
-            
                 for proc in psutil.process_iter(['pid', 'name', 'username']):
                     infoName = proc.info['name']
                     if str(infoName).lower() in filterDict.keys():
                          filterDict[str(infoName).lower()].append(proc.info)
-                
                 resultDict['process']['filter'] = filterDict
 
         return resultDict
     
 #-----------------------------------------------------------------------------
-    def getDirFiles(self, configDict=None):    
+    def getDirFiles(self, configDict=None):
+        """ Get the folder contents.
+            Args:
+                configDict (_type_, optional): _description_. Defaults to None.
+
+            Returns:
+                _type_: _description_
+        """
         resultDict ={'dir':{}}
         if configDict is None: 
             configDict = {
@@ -155,6 +184,12 @@ class localServiceProber(Prober):
                 except Exception as err:
                     self._debugPrint("Error to ls dir [%s] : %s" %(dirPath, err), logType=self._logException)
         return resultDict
+
+#-----------------------------------------------------------------------------
+    def resetResult(self):
+        for key in self.resultDict.keys():
+            if key == 'target' or key == 'time': continue
+            self.resultDict[key] = None
 
 #-----------------------------------------------------------------------------
     def updateResUsage(self, configDict=None):
