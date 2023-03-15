@@ -22,7 +22,7 @@ import os, sys
 print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(__file__)
 print("Current source code location : %s" % dirpath)
-APP_NAME = ('Scheduler', 'actors')
+APP_NAME = ('Prober', 'Agent')
 
 TOPDIR = 'src'
 LIBDIR = 'lib'
@@ -77,4 +77,6 @@ def gDebugPrint(msg, prt=True, logType=None):
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
-iScheduler = None
+iPortScanner = None
+iNetProbeDriver = None
+iLocalProbeDriver= None

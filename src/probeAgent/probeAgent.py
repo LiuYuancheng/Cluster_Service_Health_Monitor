@@ -23,6 +23,8 @@ import dataManager
 import Log
 
 import nmapUtils
+import networkServiceProber
+import localServiceProber
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -35,7 +37,7 @@ class Prober(object):
         self.functionCount = 0
         self.probActionDict = OrderedDict()
         self.crtResultDict = {}
-        self.timeInterval = timeInterval
+        self.timeInterval = timeInterval 
         self.terminate = False
 
 #-----------------------------------------------------------------------------
@@ -53,9 +55,11 @@ class Prober(object):
         if self.terminate: return 
         for probSet in self.probActionDict.items():
             actId, probAct = probSet
+            gv.gDebugPrint('execute action: %s' %str(actId), logType=gv.LOG_INFO)
             self.crtResultDict[actId]['time'] = time.time()
-            self.crtResultDict[actId]['result'] = probAct()
-            time.sleep(self.timeInterval)
+            rst = probAct(self.target)
+            if isinstance(rst, dict): self.crtResultDict[actId]['result'].update(rst)
+            if self.timeInterval > 0: time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------
     def getResult(self):
@@ -102,15 +106,28 @@ class ProbeAgent(object):
 
 #-----------------------------------------------------------------------------
 def main():
-    agnet = ProbeAgent('127.0.0.1')
+    
     # create the scanner.
-    #scanner = nmapUtils.nmapScanner()
-    def shoutPint(): 
-        print("123123")
-        return "123"
+    gv.iPortScanner = nmapUtils.nmapScanner()
+    gv.iNetProbeDriver = networkServiceProber.networkServiceProber(debugLogger=Log)
+    gv.iLocalProbeDriver = localServiceProber.localServiceProber('172.18.178.6', debugLogger=Log)
 
-    prober1 = Prober('1', target='localHost')
-    prober1.addProbAction(shoutPint)
+    agnet = ProbeAgent('172.18.178.6')
+
+    prober1 = Prober('172.18.178.10', target='172.18.178.10')
+
+    def printShort(target):
+        print(target)
+        return{}
+    prober1.addProbAction(printShort)
+    prober1.addProbAction(gv.iNetProbeDriver.checkPing)
+
+    def porbAction_0(target):
+        if gv.iPortScanner:
+            return gv.iPortScanner.scanTcpPorts(target, [22, 113, 443, 8000, 8008, 8080, 8081])
+        
+
+    prober1.addProbAction(porbAction_0)
 
     agnet.addProber(prober1)
     agnet.startRun()

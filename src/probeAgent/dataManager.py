@@ -20,6 +20,7 @@ from datetime import datetime
 
 import probeGlobal as gv
 import udpCom
+import json
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -55,5 +56,5 @@ class DataManager(threading.Thread):
     #-----------------------------------------------------------------------------
     def archiveResult(self, resultDict):
         pass
-        print(resultDict)
+        gv.gDebugPrint(json.dumps(resultDict, indent=4), logType=gv.LOG_INFO)
         return None
