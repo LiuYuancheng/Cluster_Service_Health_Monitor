@@ -1,52 +1,133 @@
+#-----------------------------------------------------------------------------
+# Name:        probGlobal.py
+#
+# Purpose:     This module is used as a local config file to set constants, 
+#              global parameters which will be used in the other modules.
+#              
+# Author:      Yuancheng Liu
+#
+# Created:     2023/03/15
+# Copyright:   
+# License:     
+#-----------------------------------------------------------------------------
+
 from flask import Flask, jsonify
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class topologyGraph(object):
+
+    def __init__(self) -> None:
+        self.nodes = []
+        self.edges = []
+        self.nodeCount = 0
+        self.edgeCount = 0
+        self.nodes_fields = [{"field_name": "id", "type": "string"},
+                    {"field_name": "title", "type": "string", "displayName": "ipAddr"},
+                    {"field_name": "subTitle", "type": "string", "displayName": "health"},
+                    {"field_name": "mainStat", "type": "string", "color": "green", "displayName": "onlineNum"},
+                    {"field_name": "secondaryStat", "type": "string", "color": "red", "displayName": "offlineNum"},
+                    {"field_name": "arc__failed", "type": "number", "color": "red", "displayName": "offline%"},
+                    {"field_name": "arc__passed", "type": "number", "color": "green", "displayName": "online%"},
+                    {"field_name": "detail__role","type": "string", "displayName": "NodeType"}]
+        self.edges_fields = [ {"field_name": "id", "type": "string"},
+                    {"field_name": "source", "type": "string"},
+                    {"field_name": "target", "type": "string"},
+                    #{"field_name": "mainStat", "type": "number"},
+                    ]
+
+    def addOneNode(self, ipAddr, role, online, total):
+        self.nodeCount += 1
+        idStr = str(self.nodeCount)
+        onlinePct = round(float(online)/total, 3)
+        offlinePct = round(float(total-online)/total, 3)
+        nodeInfo = { "id": idStr, 
+                    "title": ipAddr, 
+                    "subTitle": str(online)+' / ' +str(total), 
+                    "detail__role": role,
+                    "mainStat": str(onlinePct*100)+'%',
+                    "secondaryStat": str(offlinePct*100)+'%',
+                    "arc__passed": onlinePct, 
+                    "arc__failed": offlinePct, 
+                    }
+        self.nodes.append(nodeInfo)
+        return idStr
+
+    def addOneEdge(self, srcID, tgtID, Info=None):
+        self.edgeCount += 1
+        edgeInfo = {"id": str(self.edgeCount), "source": str(srcID), "target": str(tgtID)}
+        self.edges.append(edgeInfo)
+
+    def getNodes(self):
+        return self.nodes
+    
+    def getEdges(self):
+        return self.edges
+    
+    def getNodeFields(self):
+        return self.nodes_fields
+    
+    def getEdgeFields(self):
+        return self.edges_fields
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+def buildGraph():
+    n1 = graph.addOneNode('172.25.123.220', 'dashboard', 2, 2)
+    n2 = graph.addOneNode('172.18.172.6 [JP]', 'jumphost', 4, 4)
+    n3 = graph.addOneNode('172.18.172.10 [FW]', 'firewall', 5, 6)
+    graph.addOneEdge(n1, n2)
+    graph.addOneEdge(n1, n3)
+    n4 = graph.addOneNode('0.sg.pool.ntp.org [NTP]', 'NTP', 1, 2)
+    graph.addOneEdge(n3, n4)
+    n5 = graph.addOneNode('10.0.6.4 [CT02]', 'Openstack_CT', 5, 5)
+    graph.addOneEdge(n2, n5)
+    graph.addOneEdge(n3, n5)
+    n6 = graph.addOneNode('10.0.6.11 [CP01]', 'Openstack_CP', 2, 2)
+    graph.addOneEdge(n5, n6)
+    n7 = graph.addOneNode('10.0.6.12 [CP02]', 'Openstack_CP', 1, 2)
+    graph.addOneEdge(n5, n7)
+    n8 = graph.addOneNode('10.0.6.13 [CP03]', 'Openstack_CP', 1, 2)
+    graph.addOneEdge(n5, n8)
+    n9 = graph.addOneNode('10.0.6.20 [KP00]', 'Kypo_CP', 4, 4)
+    graph.addOneEdge(n5, n9)
+    n10 = graph.addOneNode('10.0.6.21 [KP01]', 'Kypo_CP', 4, 4)
+    graph.addOneEdge(n5, n10)
+    n11 = graph.addOneNode('10.0.6.22 [KP02]', 'Kypo_CP', 3, 4)
+    graph.addOneEdge(n5, n11)
+    # Add the CISS red nodes
+    n12 = graph.addOneNode('10.0.6.23 [CISS01]', 'CISS_RED_VB', 4, 4)
+    graph.addOneEdge(n2, n12)
+    n13 = graph.addOneNode('10.0.6.24 [CISS02]', 'CISS_RED_VB', 3, 4)
+    graph.addOneEdge(n2, n13)
+    # Add the GPU
+    n14 = graph.addOneNode('10.0.6.25 [GPU01]', 'GPU', 1, 2)
+    graph.addOneEdge(n2, n14)
+
+    n15 = graph.addOneNode('10.0.6.26 [GPU02]', 'GPU', 2, 2)
+    graph.addOneEdge(n2, n15)
+
+    n16 = graph.addOneNode('10.0.6.27 [GPU03]', 'GPU', 2, 2)
+    graph.addOneEdge(n2, n16)
+
+
 app = Flask(__name__)
+graph = topologyGraph()
+buildGraph()
+
 
 
 @app.route('/api/graph/fields')
 def fetch_graph_fields():
-    nodes_fields = [{"field_name": "id", "type": "string"},
-                    {"field_name": "title", "type": "string",
-                     },
-                    {"field_name": "subTitle", "type": "string"},
-                    {"field_name": "mainStat", "type": "string"},
-                    {"field_name": "secondaryStat", "type": "number"},
-                    {"field_name": "arc__failed",
-                     "type": "number", "color": "red", "displayName": "Failed"},
-                    {"field_name": "arc__passed",
-                     "type": "number", "color": "green", "displayName": "Passed"},
-                    {"field_name": "detail__role",
-                     "type": "string", "displayName": "Role"}]
-    edges_fields = [
-        {"field_name": "id", "type": "string"},
-        {"field_name": "source", "type": "string"},
-        {"field_name": "target", "type": "string"},
-        {"field_name": "mainStat", "type": "number"},
-    ]
-    result = {"nodes_fields": nodes_fields,
-              "edges_fields": edges_fields}
+    result = {"nodes_fields": graph.getNodeFields(),
+              "edges_fields": graph.getEdgeFields()}
     return jsonify(result)
 
 
 @app.route('/api/graph/data')
 def fetch_graph_data():
 
-    nodes = [{"id": "1", "title": "Service1", "subTitle": "instance:#2", "detail__role": "load",
-              "arc__failed": 0.7, "arc__passed": 0.3, "mainStat": "qaz"},
-             {"id": "2", "title": "Service2", "subTitle": "instance:#2", "detail__role": "transform",
-              "arc__failed": 0.5, "arc__passed": 0.5, "mainStat": "qaz"},
-             {"id": "3", "title": "Service3", "subTitle": "instance:#3", "detail__role": "extract",
-              "arc__failed": 0.3, "arc__passed": 0.7, "mainStat": "qaz"},
-             {"id": "4", "title": "Service3", "subTitle": "instance:#1", "detail__role": "transform",
-              "arc__failed": 0.5, "arc__passed": 0.5, "mainStat": "qaz"},
-             {"id": "5", "title": "Service4", "subTitle": "instance:#5", "detail__role": "transform",
-              "arc__failed": 0.5, "arc__passed": 0.5, "mainStat": "qaz"}]
-    edges = [{"id": "1", "source": "1", "target": "2", "mainStat": 53},
-             {"id": "2", "source": "2", "target": "3", "mainStat": 53},
-             {"id": "2", "source": "1", "target": "4", "mainStat": 5},
-             {"id": "3", "source": "3", "target": "5", "mainStat": 70},
-             {"id": "4", "source": "2", "target": "5", "mainStat": 100}]
-    result = {"nodes": nodes, "edges": edges}
+    result = {"nodes": graph.getNodes(), "edges": graph.getEdges()}
     return jsonify(result)
 
 
