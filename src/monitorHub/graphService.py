@@ -12,6 +12,8 @@
 #-----------------------------------------------------------------------------
 
 from flask import Flask, jsonify
+import monitorGlobal as gv
+import dataManager
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -100,13 +102,12 @@ def buildGraph():
     graph.addOneEdge(n2, n12)
     n13 = graph.addOneNode('10.0.6.24 [CISS02]', 'CISS_RED_VB', 3, 4)
     graph.addOneEdge(n2, n13)
+    
     # Add the GPU
     n14 = graph.addOneNode('10.0.6.25 [GPU01]', 'GPU', 1, 2)
     graph.addOneEdge(n2, n14)
-
     n15 = graph.addOneNode('10.0.6.26 [GPU02]', 'GPU', 2, 2)
     graph.addOneEdge(n2, n15)
-
     n16 = graph.addOneNode('10.0.6.27 [GPU03]', 'GPU', 2, 2)
     graph.addOneEdge(n2, n16)
 
@@ -114,7 +115,8 @@ def buildGraph():
 app = Flask(__name__)
 graph = topologyGraph()
 buildGraph()
-
+gv.iDataMgr = dataManager.DataManager(None)
+gv.iDataMgr.start()
 
 
 @app.route('/api/graph/fields')
@@ -135,5 +137,7 @@ def fetch_graph_data():
 def check_health():
     return "API is working well!"
 
+#-----------------------------------------------------------------------------
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000,  debug=False, threaded=True)
 
-app.run(host='0.0.0.0', port=5000)

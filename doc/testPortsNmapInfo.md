@@ -66,3 +66,110 @@ PORT     STATE SERVICE
 5900/tcp open  vnc
 ```
 
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.12
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:35 UTC
+Nmap scan report for compute2 (10.0.6.12)
+Host is up (0.00019s latency).
+Not shown: 99 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.13
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:37 UTC
+Nmap scan report for 10.0.6.13
+Host is up (0.0023s latency).
+Not shown: 99 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap done: 1 IP address (1 host up) scanned in 13.03 seconds
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.20
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:43 UTC
+Nmap scan report for 10.0.6.20
+Host is up (0.00015s latency).
+Not shown: 96 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5900/tcp open  vnc
+6000/tcp open  X11
+6001/tcp open  X11:1
+
+Nmap done: 1 IP address (1 host up) scanned in 13.02 seconds
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.21
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:40 UTC
+Nmap scan report for 10.0.6.21
+Host is up (0.00015s latency).
+Not shown: 96 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5900/tcp open  vnc
+6000/tcp open  X11
+6001/tcp open  X11:1
+
+Nmap done: 1 IP address (1 host up) scanned in 13.02 seconds
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.22
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:49 UTC
+Nmap scan report for 10.0.6.22
+Host is up (0.00012s latency).
+Not shown: 98 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5900/tcp open  vnc
+
+Nmap done: 1 IP address (1 host up) scanned in 13.03 seconds
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.23
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:51 UTC
+Nmap scan report for 10.0.6.23
+Host is up (0.00014s latency).
+Not shown: 96 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5900/tcp open  vnc
+6000/tcp open  X11
+6001/tcp open  X11:1
+
+Nmap done: 1 IP address (1 host up) scanned in 13.03 seconds
+```
+
+
+
+```
+ncl@controller1:~/programs/ncl_yc/NetworkConnDashboard/src$ nmap -F 10.0.6.25
+Starting Nmap 7.80 ( https://nmap.org ) at 2023-03-15 05:55 UTC
+Nmap scan report for 10.0.6.25
+Host is up (0.00015s latency).
+Not shown: 98 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+5900/tcp open  vnc
+
+Nmap done: 1 IP address (1 host up) scanned in 13.02 seconds
+```
+
