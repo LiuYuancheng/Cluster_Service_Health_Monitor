@@ -1,4 +1,15 @@
-
+#-----------------------------------------------------------------------------
+# Name:        probGlobal.py
+#
+# Purpose:     This module is used as a local config file to set constants, 
+#              global parameters which will be used in the other modules.
+#              
+# Author:      Yuancheng Liu
+#
+# Created:     2023/03/15
+# Copyright:   
+# License:     
+#-----------------------------------------------------------------------------
 
 from influxdb import InfluxDBClient
 import threading
@@ -10,8 +21,6 @@ from datetime import datetime
 import Log
 import udpCom
 import random 
-
-
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -74,6 +83,39 @@ class DataManager(threading.Thread):
         self.server = udpCom.udpServer(None, gv.UDP_PORT)
         self.lastUpdate = datetime.now()
         self.resultDict = {}
+        # the percentage will be shown on dashboard.
+        self.serviceInfoDict = {
+            'total_num': 0.0,
+            'firewall_on': 0.0,
+            'firewall_off':100.0,
+            'openstack_on':0.0,
+            'openstack_off':100.0,
+            'kypo_on':0.0,
+            'kypo_off':100.0,
+            'ctf_on':0.0,
+            'ctf_off':100.0,
+            'gpu_on': 0.0,
+            'gpu_off': 100.0,
+            'sup_on': 0.0,
+            'sup_off': 100.0
+        }
+
+        self.clusterResultDict = {
+            'FW': { "online": 0,"total": 8},
+            'CT02': { "online": 0,"total": 6},
+            'CP01': { "online": 0,"total": 3},
+            'CP02': { "online": 0,"total": 3},
+            'CP03': { "online": 0,"total": 3},
+            'KP00': { "online": 0,"total": 5},
+            'KP01': { "online": 0,"total": 5},
+            'KP02': { "online": 0,"total": 5},
+            'CR00': { "online": 0,"total": 5},
+            'CR01': { "online": 0,"total": 5},
+            'GPU1': { "online": 0,"total": 3},
+            'GPU2': { "online": 0,"total": 3},
+            'GPU3': { "online": 0,"total": 3},
+            'SUP': { "online": 0,"total": 3},
+        }
 
     #-----------------------------------------------------------------------------
     def run(self):
@@ -83,5 +125,20 @@ class DataManager(threading.Thread):
             if self.dbhandler:
                 onlineNum = 50+random.randint(10, 30)
                 offlineNum = 100 - onlineNum
-                self.dbhandler.writeServiceInfo('test0_allService', onlineNum, offlineNum, 100  )
+                self.dbhandler.writeServiceInfo('test0_allService', onlineNum, offlineNum, 100)
 
+    #-----------------------------------------------------------------------------
+    def updateCountResult(self, resultDict):
+        for key in self.clusterResultDict.keys():
+            if key in resultDict.keys():
+                onlineCount = 0
+                probDict = resultDict[key]
+                for proberKey in rstDict.keys():
+                    if key in proberKey:
+                        rstDict = probDict[proberKey]['result']
+                        for k in rstDict.keys():
+                            if k == 'ping' and rstDict['ping']: onlineCount += 1
+                            if isinstance(rstDict[k], list):
+                                [state, serviceType] = rstDict[k]
+                                if state == 'open': onlineCount += 1
+                self.clusterResultDict[key]['online'] = onlineCount

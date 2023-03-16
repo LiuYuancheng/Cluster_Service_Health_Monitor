@@ -38,6 +38,7 @@ class topologyGraph(object):
                     #{"field_name": "mainStat", "type": "number"},
                     ]
 
+#-----------------------------------------------------------------------------
     def addOneNode(self, ipAddr, role, online, total):
         self.nodeCount += 1
         idStr = str(self.nodeCount)
@@ -55,6 +56,7 @@ class topologyGraph(object):
         self.nodes.append(nodeInfo)
         return idStr
 
+#-----------------------------------------------------------------------------
     def addOneEdge(self, srcID, tgtID, Info=None):
         self.edgeCount += 1
         edgeInfo = {"id": str(self.edgeCount), "source": str(srcID), "target": str(tgtID)}
@@ -98,9 +100,9 @@ def buildGraph():
     n11 = graph.addOneNode('10.0.6.22 [KP02]', 'Kypo_CP', 3, 4)
     graph.addOneEdge(n5, n11)
     # Add the CISS red nodes
-    n12 = graph.addOneNode('10.0.6.23 [CISS01]', 'CISS_RED_VB', 4, 4)
+    n12 = graph.addOneNode('10.0.6.23 [CTF01]', 'CTF-D_VB', 4, 4)
     graph.addOneEdge(n2, n12)
-    n13 = graph.addOneNode('10.0.6.24 [CISS02]', 'CISS_RED_VB', 3, 4)
+    n13 = graph.addOneNode('10.0.6.24 [CTF02]', 'CTF-D_VB', 3, 4)
     graph.addOneEdge(n2, n13)
     
     # Add the GPU
