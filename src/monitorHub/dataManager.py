@@ -24,6 +24,21 @@ from datetime import datetime
 import Log
 import udpCom
 
+# Define all the module local untility functions here:
+#-----------------------------------------------------------------------------
+def parseIncomeMsg(msg):
+    """ parse the income message to tuple with 3 element: request key, type and jsonString
+        Args: msg (str): example: 'GET;dataType;{"user":"<username>"}'
+    """
+    req = msg.decode('UTF-8') if not isinstance(msg, str) else msg
+    reqKey = reqType = reqJsonStr= None
+    try:
+        reqKey, reqType, reqJsonStr = req.split(';', 2)
+    except Exception as err:
+        Log.error('parseIncomeMsg(): The income message format is incorrect.')
+        Log.exception(err)
+    return (reqKey.strip(), reqType.strip(), reqJsonStr)
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class InfluxCli(object):
@@ -75,7 +90,9 @@ class DataManager(threading.Thread):
         self.dbhandler = InfluxCli(ipAddr=('localhost', 8086), dbInfo=('root', 'root', gv.TB_NAME))
         self.terminate = False
         self.timeInterval = 20
-        self.server = udpCom.udpServer(None, gv.UDP_PORT)
+        self.ipaddress = '172.18.178.6'
+        self.udpPort = 3001
+        self.connector = udpCom.udpClient((self.ipaddress, self.udpPort))
         self.lastUpdate = datetime.now()
         self.resultDict = {}
         # the percentage will be shown on dashboard.
@@ -135,6 +152,14 @@ class DataManager(threading.Thread):
                     self.updateCountResult(inputDict)
                     self.updateServiceInfo()
                     print(self.getSericeDict())
+                else:
+                    resp = self.connector.sendMsg('GET;data;fetch', resp=True)
+                    if resp:
+                        k, t, data = parseIncomeMsg(resp)
+                        inputDict = json.loads(data)
+                        self.updateCountResult(inputDict)
+                        self.updateServiceInfo()
+                        print(self.getSericeDict())
                 self.dbhandler.writeServiceInfo(gv.gMeasurement, self.getSericeDict())
                 # update the score
                 ScoreDict ={
