@@ -55,6 +55,18 @@ class topologyGraph(object):
                     }
         self.nodes.append(nodeInfo)
         return idStr
+    
+
+#-----------------------------------------------------------------------------
+    def updateNodeInfo(self, id, online, total):
+        if id <  self.nodeCount:
+            onlinePct = round(float(online)/total, 3)
+            offlinePct = round(float(total-online)/total, 3)
+            self.nodes[int(id)]['subTitle'] =  str(online)+' / ' +str(total)
+            self.nodes[int(id)]['mainStat'] = str(onlinePct*100)+'%'
+            self.nodes[int(id)]['secondaryStat'] = str(offlinePct*100)+'%'
+            self.nodes[int(id)]['arc__passed'] = onlinePct
+            self.nodes[int(id)]['arc__failed'] = offlinePct
 
 #-----------------------------------------------------------------------------
     def addOneEdge(self, srcID, tgtID, Info=None):
@@ -133,7 +145,6 @@ def fetch_graph_data():
 
     result = {"nodes": graph.getNodes(), "edges": graph.getEdges()}
     return jsonify(result)
-
 
 @app.route('/api/health')
 def check_health():

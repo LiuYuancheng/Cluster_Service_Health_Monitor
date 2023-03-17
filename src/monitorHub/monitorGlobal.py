@@ -77,5 +77,7 @@ def gDebugPrint(msg, prt=True, logType=None):
 
 TB_NAME = 'gatewayDB'   # influx DB table name.
 
+gMeasurement = 'as06_services'
+
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
