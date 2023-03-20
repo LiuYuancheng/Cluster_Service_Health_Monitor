@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Name:        probGlobal.py
+# Name:        monitorGlobal.py
 #
 # Purpose:     This module is used as a local config file to set constants, 
 #              global parameters which will be used in the other modules.
@@ -75,8 +75,7 @@ def gDebugPrint(msg, prt=True, logType=None):
     elif logType == LOG_INFO or DEBUG_FLG:
         Log.info(msg)
 
-TB_NAME = 'gatewayDB'   # influx DB table name.
-
+gDataTale = 'gatewayDB'   # influx DB table name.
 gMeasurement = 'as06_services'
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
