@@ -88,7 +88,7 @@ class topologyGraph(object):
                     "arc__failed": offlinePct}
         self.nodes.append(nodeInfo)
         return idStr
-
+    
 #-----------------------------------------------------------------------------
     def addOneEdge(self, srcID, tgtID, Info=None):
         self.edgeCount += 1

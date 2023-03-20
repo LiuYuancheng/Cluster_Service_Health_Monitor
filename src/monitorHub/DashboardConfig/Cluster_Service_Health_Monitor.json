@@ -52,9 +52,82 @@
         "x": 0,
         "y": 1
       },
+      "header_js": "{}",
+      "id": 34,
+      "links": [],
+      "maxDataPoints": 3,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{}",
+      "pluginVersion": "9.4.3",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "a--OIr4Gk"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "as06_services",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "ctf_off"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
+        }
+      ],
+      "templateResponse": true,
+      "type": "ryantxu-ajax-panel",
+      "url": "http://127.0.0.1:5000/logo",
+      "withCredentials": false
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
       "id": 4,
       "options": {
-        "bgColor": "transparent",
+        "bgColor": "",
         "clockType": "12 hour",
         "countdownSettings": {
           "endCountdownTime": "2023-03-16T19:01:36+08:00",
@@ -99,9 +172,9 @@
           "color": {
             "mode": "thresholds"
           },
-          "displayName": "Cluster service availability of 60",
+          "displayName": "Cluster service availability of 71",
           "mappings": [],
-          "max": 60,
+          "max": 70,
           "min": 0,
           "noValue": "monitor not start",
           "thresholds": {
@@ -127,8 +200,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 14,
-        "x": 4,
+        "w": 12,
+        "x": 8,
         "y": 1
       },
       "id": 6,
@@ -224,8 +297,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 6,
-        "x": 18,
+        "w": 4,
+        "x": 20,
         "y": 1
       },
       "id": 19,
@@ -3082,6 +3155,6 @@
   "timezone": "",
   "title": "Cluster_Service_Health_Monitor",
   "uid": "QwoSZLaVk",
-  "version": 13,
+  "version": 15,
   "weekStart": ""
 }

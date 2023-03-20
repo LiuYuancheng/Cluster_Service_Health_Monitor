@@ -12,7 +12,9 @@
 # License:     
 #-----------------------------------------------------------------------------
 
-from flask import Flask, jsonify
+import os
+
+from flask import Flask, render_template, jsonify
 import monitorGlobal as gv
 import dataManager
 
@@ -58,6 +60,9 @@ def buildGraph():
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 app = Flask(__name__)
+PEOPLE_FOLDER = os.path.join('static', 'img')
+app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER
+
 gv.iDataMgr = dataManager.DataManager(None, fetchMode=True)
 graph = dataManager.topologyGraph()
 buildGraph()
@@ -66,6 +71,7 @@ targetInfo = ('127.0.0.1', gv.UDP_PORT)
 gv.iDataMgr.addTargetConnector(targetInfo[0], targetInfo[1])
 gv.iDataMgr.start()
 
+#-----------------------------------------------------------------------------
 @app.route('/api/graph/fields')
 def fetch_graph_fields():
     result = {"nodes_fields": graph.getNodeFields(),
@@ -80,6 +86,12 @@ def fetch_graph_data():
 @app.route('/api/health')
 def check_health():
     return "API is working well!"
+
+#-----------------------------------------------------------------------------
+@app.route('/logo')
+def show_logo():
+    full_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'ncl_logo.png')
+    return render_template("logo.html", user_image = full_filename)
 
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':
