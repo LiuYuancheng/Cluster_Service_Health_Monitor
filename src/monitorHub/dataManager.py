@@ -416,7 +416,8 @@ class DataManager(threading.Thread):
                 else:
                     _, _, data = parseIncomeMsg(resp)
                     inputDict = json.loads(data)
-                    self.rawDataDict[ipaddr] = inputDict
+                    self.updateRawData(ipaddr, inputDict)
+                    #self.rawDataDict[ipaddr] = inputDict
                     self.scoreCal.updateSericeCount(inputDict)
         else:
             gv.gDebugPrint('Fetch mode is disabled.', logType=gv.LOG_WARN)
@@ -424,7 +425,9 @@ class DataManager(threading.Thread):
 #-----------------------------------------------------------------------------
     def updateRawData(self, ipaddr, dataDict):
         if ipaddr in self.rawDataDict.keys():
+            gv.gDebugPrint('Add raw data')
             self.rawDataDict[ipaddr] = dataDict
+            self.scoreCal.updateSericeCount(dataDict)
         else:
             gv.gDebugPrint('The agent [%s] is not registered, please add the agent first.' %str(ipaddr), logType=gv.LOG_WARN)
 
@@ -435,6 +438,7 @@ class DataManager(threading.Thread):
             if self.fetchMode and self.scoreCal: self.fetchData(cmd='GET;data;fetch')
             if self.dbhandler:
                 self.scoreCal.updateServiceInfo()
+                print("Update the database")
                 self.dbhandler.writeServiceInfo(gv.gMeasurement, self.scoreCal.getSericeInfo())
                 time.sleep(0.1)     
                 self.dbhandler.writeServiceInfo('test0_allService', self.scoreCal.getScoreInfo(None))

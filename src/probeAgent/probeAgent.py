@@ -74,7 +74,7 @@ class ProbeAgent(object):
         self.id = id
         self.timeInterval = timeInterval
         # start the datamanager to handler the monitor and database 
-        gv.iDataMgr = dataManager.DataManager(self)
+        gv.iDataMgr = dataManager.DataManager(self, fetchMode=False)
         gv.iDataMgr.start()
         #gv.gDebugPrint("Scheduler: %s init ready." %str(self.actorName), logType=gv.LOG_INFO)
         self.proberDict = OrderedDict()
@@ -103,6 +103,9 @@ class ProbeAgent(object):
     def startRun(self):
         while not self.terminate:
             self.executeProbers()
+            time.sleep(1)
+            if gv.iDataMgr:
+                gv.iDataMgr.reportToHub()
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------

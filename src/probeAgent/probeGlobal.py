@@ -75,6 +75,12 @@ def gDebugPrint(msg, prt=True, logType=None):
     elif logType == LOG_INFO or DEBUG_FLG:
         Log.info(msg)
 
+gMonitorHubAddr = {
+    # 'ipaddr': '172.25.123.220',
+    'ipaddr': '127.0.0.1',
+    'port': 5000
+}
+
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
 iPortScanner = None

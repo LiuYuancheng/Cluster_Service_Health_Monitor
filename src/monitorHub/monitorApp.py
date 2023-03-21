@@ -13,8 +13,9 @@
 #-----------------------------------------------------------------------------
 
 import os
+import json
 
-from flask import Flask, render_template, jsonify
+from flask import Flask, request, render_template, jsonify
 import monitorGlobal as gv
 import dataManager
 
@@ -25,14 +26,15 @@ PEOPLE_FOLDER = os.path.join('static', 'img')
 app.config['UPLOAD_FOLDER'] = PEOPLE_FOLDER
 
 gv.iClusterGraph = dataManager.clusterGraph()
-gv.iDataMgr = dataManager.DataManager(None, fetchMode=True)
+gv.iDataMgr = dataManager.DataManager(None, fetchMode=False)
 
-#targetInfo = ('172.18.178.6', gv.UDP_PORT)
-targetInfo = ('127.0.0.1', gv.UDP_PORT)
+targetInfo = ('172.18.178.6', gv.UDP_PORT)
+#targetInfo = ('127.0.0.1', gv.UDP_PORT)
 gv.iDataMgr.addTargetConnector(targetInfo[0], targetInfo[1])
 gv.iDataMgr.start()
 
 #-----------------------------------------------------------------------------
+# graph request handling
 @app.route('/api/graph/fields')
 def fetch_graph_fields():
     result = {"nodes_fields": gv.iClusterGraph.getNodeFields(),
@@ -50,10 +52,21 @@ def check_health():
     return "API is working well!"
 
 #-----------------------------------------------------------------------------
+# Ajax panel request handling
 @app.route('/logo')
 def show_logo():
     full_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'ncl_logo.png')
     return render_template("logo.html", user_image = full_filename)
+
+#-----------------------------------------------------------------------------
+# Data post request handling 
+@app.route('/dataPost/<string:uuid>', methods=('POST',))
+def add_message(uuid):
+    content = request.json
+    gv.gDebugPrint("Get raw data from %s "%str(uuid), logType=gv.LOG_INFO)
+    gv.gDebugPrint("Raw Data: %s" %str(content['rawData']), prt=False, logType=gv.LOG_INFO)
+    gv.iDataMgr.updateRawData(uuid, json.loads(content['rawData']))
+    return jsonify({"ok":True})
 
 #-----------------------------------------------------------------------------
 if __name__ == '__main__':

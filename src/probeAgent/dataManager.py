@@ -16,7 +16,7 @@
 import time
 import json
 import threading
-
+import requests
 
 from datetime import datetime
 
@@ -40,6 +40,17 @@ def parseIncomeMsg(msg):
         Log.exception(err)
         return('','',json.dumps({}))
 
+#-----------------------------------------------------------------------------
+def postData(jsonDict):
+    reportUrl = "http://%s:%s/dataPost/" % (gv.gMonitorHubAddr['ipaddr'], str(gv.gMonitorHubAddr['port']))
+    reportUrl += str(jsonDict['id'])
+    try:
+        gv.gDebugPrint("Start to report monitorHub[%s]" %str(gv.gMonitorHubAddr['ipaddr']), logType=gv.LOG_INFO)
+        res = requests.post(reportUrl, json={"rawData":json.dumps(jsonDict)})
+        if res.ok:
+            gv.gDebugPrint(" monitorHub reply: %s" %str(res.json()), logType=gv.LOG_INFO)
+    except Exception as err:
+        gv.gDebugPrint("Service side not reachable, error: %s" %str(err), logType=gv.LOG_ERR)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -48,14 +59,17 @@ class DataManager(threading.Thread):
         handle the data-IO with dataBase and the monitor hub's data fetching/
         changing request.
     """
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, fetchMode=True) -> None:
         threading.Thread.__init__(self)
         self.parent = parent
         self.terminate = False
+        self.fetchMode = fetchMode
+        self.reportInterval = 0
         self.server = udpCom.udpServer(None, gv.UDP_PORT)
         self.lastUpdate = datetime.now()
         self.resultDict = {}
 
+    #-----------------------------------------------------------------------------
     def msgHandler(self, msg):
         """ Function to handle the data-fetch/control request from the monitor-hub.
             Args:
@@ -75,11 +89,21 @@ class DataManager(threading.Thread):
     def run(self):
         """ Thread run() function will be called by start(). """
         time.sleep(1)
-        self.server.serverStart(handler=self.msgHandler)
+        if self.fetchMode:
+            self.server.serverStart(handler=self.msgHandler)
+        elif self.reportInterval > 0:
+            while not self.terminate:
+                time.sleep(self.reportInterval)
+                self.reportToHub()
         gv.gDebugPrint("DataManager running finished.", logType=gv.LOG_INFO)
     
     #-----------------------------------------------------------------------------
     def archiveResult(self, resultDict):
         self.resultDict = resultDict
-        gv.gDebugPrint(json.dumps(resultDict),prt=False, logType=gv.LOG_INFO)
+        gv.gDebugPrint(json.dumps(resultDict), prt=False, logType=gv.LOG_INFO)
         return None
+    
+    #-----------------------------------------------------------------------------
+    def reportToHub(self):
+        if not self.fetchMode:
+            postData(self.resultDict)
