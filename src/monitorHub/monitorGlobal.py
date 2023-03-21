@@ -80,3 +80,4 @@ gMeasurement = 'as06_services'
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
+iClusterGraph = None

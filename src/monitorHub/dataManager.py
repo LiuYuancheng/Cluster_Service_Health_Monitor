@@ -74,7 +74,6 @@ class topologyGraph(object):
                 total (int): total service.
             Returns: str: the new ID.
         """
-        self.nodeCount += 1
         idStr = str(self.nodeCount)
         onlinePct = round(float(online)/total, 3)
         offlinePct = round(float(total-online)/total, 3)
@@ -87,6 +86,7 @@ class topologyGraph(object):
                     "arc__passed": onlinePct,
                     "arc__failed": offlinePct}
         self.nodes.append(nodeInfo)
+        self.nodeCount += 1
         return idStr
     
 #-----------------------------------------------------------------------------
@@ -122,6 +122,73 @@ class topologyGraph(object):
         else: 
             gv.gDebugPrint("The node [%s] is not exist, can not update" %str(id), logType=gv.LOG_INFO)
             return False
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class clusterGraph(topologyGraph):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._idMapDict = {} # A map dict used map data manager's targets service count dict to the ids
+        self._buildStateGraph()
+
+    def _buildStateGraph(self):
+        n1 = self.addOneNode('172.25.123.220', 'dashboard', 2, 2)
+        n2 = self.addOneNode('172.18.172.6 [JP]', 'jumphost', 4, 4)
+        n3 = self.addOneNode('172.18.172.10 [FW]', 'firewall', 5, 6)
+        self._idMapDict['FW'] = int(n3)
+        self.addOneEdge(n1, n2)
+        self.addOneEdge(n1, n3)
+        n4 = self.addOneNode('0.sg.pool.ntp.org [NTP]', 'NTP', 1, 2)
+        self._idMapDict['SUP'] = int(n4)
+        self.addOneEdge(n3, n4)
+        n5 = self.addOneNode('10.0.6.4 [CT02]', 'Openstack_CT', 5, 5)
+        self._idMapDict['CT02'] = int(n5)
+        self.addOneEdge(n2, n5)
+        self.addOneEdge(n3, n5)
+        n6 = self.addOneNode('10.0.6.11 [CP01]', 'Openstack_CP', 2, 2)
+        self._idMapDict['CP01'] = int(n6)
+        self.addOneEdge(n5, n6)
+        n7 = self.addOneNode('10.0.6.12 [CP02]', 'Openstack_CP', 1, 2)
+        self._idMapDict['CP02'] = int(n7)
+        self.addOneEdge(n5, n7)
+        n8 = self.addOneNode('10.0.6.13 [CP03]', 'Openstack_CP', 1, 2)
+        self._idMapDict['CP03'] = int(n8)
+        self.addOneEdge(n5, n8)
+        n9 = self.addOneNode('10.0.6.20 [KP00]', 'Kypo_CP', 4, 4)
+        self._idMapDict['KP00'] = int(n9)
+        self.addOneEdge(n5, n9)
+        n10 = self.addOneNode('10.0.6.21 [KP01]', 'Kypo_CP', 4, 4)
+        self._idMapDict['KP01'] = int(n10)
+        self.addOneEdge(n5, n10)
+        n11 = self.addOneNode('10.0.6.22 [KP02]', 'Kypo_CP', 3, 4)
+        self._idMapDict['KP02'] = int(n11)
+        self.addOneEdge(n5, n11)
+        # Add the CISS red nodes
+        n12 = self.addOneNode('10.0.6.23 [CTF01]', 'CTF-D_VB', 4, 4)
+        self._idMapDict['CR00'] = int(n12)
+        self.addOneEdge(n2, n12)
+        n13 = self.addOneNode('10.0.6.24 [CTF02]', 'CTF-D_VB', 3, 4)
+        self._idMapDict['CR01'] = int(n13)
+        self.addOneEdge(n2, n13)
+        # Add the GPU
+        n14 = self.addOneNode('10.0.6.25 [GPU01]', 'GPU', 1, 2)
+        self._idMapDict['GPU1'] = int(n14)
+        self.addOneEdge(n2, n14)
+        n15 = self.addOneNode('10.0.6.26 [GPU02]', 'GPU', 2, 2)
+        self._idMapDict['GPU2'] = int(n15)
+        self.addOneEdge(n2, n15)
+        n16 = self.addOneNode('10.0.6.27 [GPU03]', 'GPU', 2, 2)
+        self._idMapDict['GPU2'] = int(n16)
+        self.addOneEdge(n2, n16)
+
+    def updateNodesState(self, serveiceCountDict):
+        for key in serveiceCountDict.keys():
+            if key in self._idMapDict.keys():
+                nodeId = self._idMapDict[key]
+                online = serveiceCountDict[key]['online']
+                total = serveiceCountDict[key]['total']
+                self.updateNodeInfo(nodeId, online, total)
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -316,9 +383,10 @@ class DataManager(threading.Thread):
         self.fetchMode = fetchMode
         self.connectorsDict = dict() if self.fetchMode else None
         self.rawDataDict = dict()   # The dictionary used to save the raw data.
+        # set the score database client
         self.dbhandler = InfluxCli(ipAddr=('localhost', 8086), dbInfo=('root', 'root', gv.gDataTale))
-        
-        self.timeInterval = 20
+
+        self.timeInterval = 30
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
         self.terminate = False
@@ -364,12 +432,14 @@ class DataManager(threading.Thread):
     def run(self):
         while not self.terminate:
             # fetch data from the agents
-            if self.scoreCal: self.fetchData(cmd='GET;data;fetch')
+            if self.fetchMode and self.scoreCal: self.fetchData(cmd='GET;data;fetch')
             if self.dbhandler:
                 self.scoreCal.updateServiceInfo()
                 self.dbhandler.writeServiceInfo(gv.gMeasurement, self.scoreCal.getSericeInfo())
                 time.sleep(0.1)     
                 self.dbhandler.writeServiceInfo('test0_allService', self.scoreCal.getScoreInfo(None))
+                if gv.iClusterGraph:
+                    gv.iClusterGraph.updateNodesState(self.scoreCal.getSericeCounts())
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------
