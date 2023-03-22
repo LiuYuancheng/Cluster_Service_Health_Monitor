@@ -1,6 +1,6 @@
 # Cluster Service Health Monitor
 
-**Program Design Purpose** : we want to create a monitor system which can regular check the availability/execution state of each nodes/vms/services/programs used in a computing cluster without doing much change of the routing config of switches in the network or install much additional libs on the nodes. The system can be applied to monitor the below scenario: 
+**Program Design Purpose** : We want to create a monitor system which can show customer the services availability of a mid size cluster in real time. The program can check the availability / execution state of each nodes/vms/services/programs in the cluster regularly and provide the health evaluation score based on user's requirement or pre-set calculation function. We aim to avoid the user making much change of their routing config of the switches in the network or installing much additional libs on their nodes during the setup to reduce the complexity of deployment. The system can be applied to monitor the below scenario:
 
 - Monitor the health of the related nodes/services used in a cyber exercise. 
 - Monitor whether some attack is happening or has happened on some critical nodes (such as NTP server)/service program of a cluster. 
@@ -18,7 +18,7 @@ The Cluster Service Heath Monitor is a system's function/service monitoring prog
 
 - **Service Prober Repository** : A service checking lib with server different probers function (such as check NTP, FTP, VNC, ssh ...) to detect whether a specific service/function is working normally.
 
-- **Prober Agent** :  A agent collects and schedule several different kinds of probers to check the entire availably of a small cluster. The prober agent provides below 4 main feature: 
+- **Prober Agent** :  A agent collects and schedule several different kinds of probers to check the entire availably of one or multiple targets’ state in the cluster. The prober agent provides below 4 main feature: 
 
   - It provide a profile configuration function so the user can easily use their customized profile to organize the probers together based his service monitor requirement.  
   - It can run inside the critical node to check the node's local state (such as the node resource usage, file system modification, user login or the program execution state), it can also run outside a node to check the service interface of a node. So the customer can deploy the agent based on his monitor priority instead of deploying agent to every node. 
@@ -59,8 +59,8 @@ Service Prober Repository is a prober module lib to provide the service/program 
 
   | Prober Name           | Probe action/ service covered                               |
   | --------------------- | ----------------------------------------------------------- |
-  | Resource usage Prober | CPU %, Memory %, HardDisk %, Network Bandwidth Usage.       |
-  | User action Prober    | User login, cmd execute, file system modification,          |
+  | Resource usage Prober | CPU %, Memory %, Hard Disk %, Network Bandwidth Usage.      |
+  | User action Prober    | User login, cmd execute, file system modification.          |
   | Program action prober | Process execution, service port opened, program  log check. |
 
 - Network service prober: The service prober run outside the target node to check the node's service through network. 
@@ -70,11 +70,11 @@ Service Prober Repository is a prober module lib to provide the service/program 
   | Server active Prober    | ICMP (ping), SSH(login), RDP, VNC, X11/X11:1-Win             |
   | Service ports prober    | Nmap check the node's request service ports are opened.      |
   | Service function prober | NTP service prober : Check the NTP service latency and time offset correctness. |
-  |                         | DNS/NS service prober: Check the dns service service name mapping correct. |
+  |                         | DNS/NS service prober: Check the dns service name mapping correct. |
   |                         | DHCP service prober: Check the dhcp broadcast.               |
   |                         | FTP service prober : Whether can login the FTP server and list the directory tree. |
   |                         | Http/https web prober: Check the webserver can handle request correctly |
-  |                         | email service prober: Check whether the email server is working normally. |
+  |                         | Email service prober: Check whether the email server is working normally. |
   |                         | TCP service prober: Service use TCP connection. (such as MS-Teams service) |
   |                         | UDP service prober: service use UDP connection. (such as Skype service) |
   |                         | Database service prober: Check the database connection.      |
@@ -83,7 +83,7 @@ Service Prober Repository is a prober module lib to provide the service/program 
 
 ##### Prober Agent
 
-A agent collects and schedule several different kinds of probers to check the entire service availably of a small cluster.  The prober agent provides below 5 main feature: 
+A agent collects and schedule several different kinds of probers based on the config profile to check the entire service availably of a small cluster.  The prober agent provides below 5 main feature: 
 
 - It provide a profile configuration function so the user can easily use their customized profile to organize the probers together based his service monitor requirement.  
 - It can run inside the critical node to check the node's local state (such as the node resource usage, file system modification, user login or the program execution state), it can also run outside a node to check the service interface of a node. So the customer can deploy the agent based on his monitor priority instead of deploying agent to every node. 
