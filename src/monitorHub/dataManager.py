@@ -179,7 +179,7 @@ class clusterGraph(topologyGraph):
         self._idMapDict['GPU2'] = int(n15)
         self.addOneEdge(n2, n15)
         n16 = self.addOneNode('10.0.6.27 [GPU03]', 'GPU', 2, 2)
-        self._idMapDict['GPU2'] = int(n16)
+        self._idMapDict['GPU3'] = int(n16)
         self.addOneEdge(n2, n16)
 
     def updateNodesState(self, serveiceCountDict):
