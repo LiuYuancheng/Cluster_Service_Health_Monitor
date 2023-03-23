@@ -15,7 +15,9 @@
 # License:     n.a
 #-----------------------------------------------------------------------------
 
+import os
 import time
+import json
 from collections import OrderedDict
 
 import probeGlobal as gv
@@ -102,9 +104,18 @@ class ProbeAgent(object):
 #-----------------------------------------------------------------------------     
     def startRun(self):
         while not self.terminate:
-            self.executeProbers()
+            if not gv.gTestMode:
+                self.executeProbers()
             time.sleep(1)
             if gv.iDataMgr:
+                if gv.gTestMode:
+                    print('load simulation data')
+                    testFile = os.path.join(gv.DIR_PATH, 'test.json')
+                    with open(testFile, 'r') as f:
+                        data = json.load(f)
+                        gv.iDataMgr.archiveResult(data)
+                else:
+                    gv.iDataMgr.archiveResult(self.crtResultDict)
                 gv.iDataMgr.reportToHub()
             time.sleep(self.timeInterval)
 
@@ -116,7 +127,7 @@ def main():
     gv.iPortScanner = nmapUtils.nmapScanner()
     gv.iNetProbeDriver = networkServiceProber.networkServiceProber(debugLogger=Log)
     gv.iLocalProbeDriver = localServiceProber.localServiceProber('172.18.178.6', debugLogger=Log)
-    agnet = ProbeAgent('172.18.178.6')
+    agnet = ProbeAgent('172.18.178.6', timeInterval=60)
     
     # add a prober to check the Forni
     prober1 = Prober('FW', target='172.18.178.10')

@@ -63,6 +63,7 @@ PROB_TP_LOCAL = 0   # Prob touch the current node
 # the UDP ports
 UDP_PORT = 3001
 
+
 #-------<GLOBAL VARIABLES (start with "g")>-------------------------------------
 def gDebugPrint(msg, prt=True, logType=None):
     if prt: print(msg)
@@ -80,6 +81,8 @@ gMonitorHubAddr = {
     'ipaddr': '127.0.0.1',
     'port': 5000
 }
+
+gTestMode = True
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
