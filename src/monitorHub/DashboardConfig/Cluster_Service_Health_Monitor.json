@@ -29,12 +29,25 @@
   "liveNow": false,
   "panels": [
     {
-      "collapsed": false,
+      "collapsed": true,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 36,
+      "panels": [],
+      "title": "Team02",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
       },
       "id": 32,
       "panels": [],
@@ -50,7 +63,7 @@
         "h": 3,
         "w": 4,
         "x": 0,
-        "y": 1
+        "y": 2
       },
       "header_js": "{}",
       "id": 34,
@@ -123,7 +136,7 @@
         "h": 3,
         "w": 4,
         "x": 4,
-        "y": 1
+        "y": 2
       },
       "id": 4,
       "options": {
@@ -202,7 +215,7 @@
         "h": 3,
         "w": 12,
         "x": 8,
-        "y": 1
+        "y": 2
       },
       "id": 6,
       "options": {
@@ -288,7 +301,7 @@
               },
               {
                 "color": "green",
-                "value": 80
+                "value": 60
               }
             ]
           }
@@ -299,7 +312,7 @@
         "h": 3,
         "w": 4,
         "x": 20,
-        "y": 1
+        "y": 2
       },
       "id": 19,
       "options": {
@@ -353,13 +366,19 @@
               {
                 "params": [],
                 "type": "last"
+              },
+              {
+                "params": [
+                  "* 100"
+                ],
+                "type": "math"
               }
             ]
           ],
           "tags": []
         }
       ],
-      "title": "Health Score",
+      "title": "Health Score [Cluster]",
       "transformations": [
         {
           "id": "heatmap",
@@ -387,7 +406,7 @@
         "h": 14,
         "w": 12,
         "x": 0,
-        "y": 4
+        "y": 5
       },
       "id": 2,
       "options": {
@@ -441,7 +460,7 @@
         "h": 2,
         "w": 6,
         "x": 12,
-        "y": 4
+        "y": 5
       },
       "id": 11,
       "options": {
@@ -631,7 +650,7 @@
         "h": 2,
         "w": 6,
         "x": 18,
-        "y": 4
+        "y": 5
       },
       "id": 20,
       "options": {
@@ -798,7 +817,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -824,7 +843,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 6
+        "y": 7
       },
       "id": 8,
       "options": {
@@ -899,7 +918,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -922,7 +941,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 6
+        "y": 7
       },
       "id": 9,
       "options": {
@@ -992,7 +1011,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -1018,7 +1037,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 6
+        "y": 7
       },
       "id": 21,
       "options": {
@@ -1088,7 +1107,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -1111,7 +1130,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 6
+        "y": 7
       },
       "id": 22,
       "options": {
@@ -1204,7 +1223,7 @@
         "h": 2,
         "w": 6,
         "x": 12,
-        "y": 11
+        "y": 12
       },
       "id": 12,
       "options": {
@@ -1394,7 +1413,7 @@
         "h": 2,
         "w": 6,
         "x": 18,
-        "y": 11
+        "y": 12
       },
       "id": 23,
       "options": {
@@ -1561,7 +1580,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -1587,7 +1606,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 13
+        "y": 14
       },
       "id": 13,
       "options": {
@@ -1664,7 +1683,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -1687,7 +1706,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 13
+        "y": 14
       },
       "id": 16,
       "options": {
@@ -1757,7 +1776,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -1783,7 +1802,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 13
+        "y": 14
       },
       "id": 24,
       "options": {
@@ -1853,7 +1872,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -1876,7 +1895,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 13
+        "y": 14
       },
       "id": 25,
       "options": {
@@ -2093,7 +2112,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "id": 30,
       "options": {
@@ -2367,7 +2386,7 @@
           "tags": []
         }
       ],
-      "title": "Service Report ",
+      "title": "Service Health Report [ Sub-Score ]",
       "transformations": [
         {
           "id": "joinByField",
@@ -2412,7 +2431,7 @@
         "h": 2,
         "w": 6,
         "x": 12,
-        "y": 18
+        "y": 19
       },
       "id": 14,
       "options": {
@@ -2602,7 +2621,7 @@
         "h": 2,
         "w": 6,
         "x": 18,
-        "y": 18
+        "y": 19
       },
       "id": 26,
       "options": {
@@ -2769,7 +2788,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -2795,7 +2814,7 @@
         "h": 5,
         "w": 3,
         "x": 12,
-        "y": 20
+        "y": 21
       },
       "id": 15,
       "options": {
@@ -2866,7 +2885,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -2889,7 +2908,7 @@
         "h": 5,
         "w": 3,
         "x": 15,
-        "y": 20
+        "y": 21
       },
       "id": 17,
       "options": {
@@ -2959,7 +2978,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "online",
           "mappings": [],
           "max": 100,
@@ -2985,7 +3004,7 @@
         "h": 5,
         "w": 3,
         "x": 18,
-        "y": 20
+        "y": 21
       },
       "id": 27,
       "options": {
@@ -3055,7 +3074,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 1,
+          "decimals": 0,
           "displayName": "offline",
           "mappings": [],
           "max": 100,
@@ -3078,7 +3097,7 @@
         "h": 5,
         "w": 3,
         "x": 21,
-        "y": 20
+        "y": 21
       },
       "id": 28,
       "options": {
@@ -3155,6 +3174,6 @@
   "timezone": "",
   "title": "Cluster_Service_Health_Monitor",
   "uid": "QwoSZLaVk",
-  "version": 15,
+  "version": 18,
   "weekStart": ""
 }
