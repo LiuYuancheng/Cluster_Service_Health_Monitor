@@ -76,12 +76,14 @@ def gDebugPrint(msg, prt=True, logType=None):
 gMonitorHubAddr = {
     # 'ipaddr': '172.25.123.220',
     'ipaddr': '127.0.0.1',
-    'port': 5000
+    'httpPort': 5000,
+    'udpPort': 3001
 }
 
 gTestMode = True
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
+iCommMgr = None
 iDataMgr = None
 iPortScanner = None
 iNetProbeDriver = None
