@@ -10,11 +10,6 @@
     width: 100%;
     height: 50%;
   }*/
-
-  td, th {
-    border-width: 2px;
-    }
-
 </style>
 
 {% endblock %}
@@ -22,37 +17,50 @@
 {% block content %}
 
 <div class="container-fluid mt-3">
-  {% set tablewidth = 250+120+posts['colNum']*40 %}
+    {% set tablewidth = 250+120+posts['colNum']*40 %}
 
-  <table class="table table-bordered table-sm table-dark table-striped" style="max-width: {{tablewidth}}px;">
-    <thead>
-      <tr>
-        <th style="width: 250px;">System</th>
-        <th style="width: 120px;">Zone</th>
-        {% for i in range(posts['colNum'])%}
-            <th style="width: 40px;">{{ '%02d' % i }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
+    <table class="table table-bordered table-sm table-dark table-striped" style="max-width: {{tablewidth}}px;">
+        <thead>
+            <tr>
+                <th style="width: 250px;">System</th>
+                <th style="width: 120px;">Zone</th>
+                {% for i in range(posts['colNum'])%}
+                <th style="width: 40px;">{{ '%02d' % i }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
 
-    <tbody>
-      <tr>
-        <td > </td>
-        <td> </td>
-        <td> <b class="text-bg-success">00 </b></td>
-      </tr>
-      <tr>
-        <td> </td>
-        <td> </td>
-        <td class = "table-danger"> 00</td>
-      </tr>
-      <tr>
-        <td> </td>
-        <td> </td>
-        <td> </td>
-      </tr>
-    </tbody>
-  </table>
+        <tbody>
+            {% for teamInfo in posts['detail']%}
+            <tr class="table-primary">
+                <td>{{teamInfo['GroupName']}} Cluster State: </td>
+            </tr>
+            {% for key, value in teamInfo.items() %}
+            {% if key != 'GroupName' %}
+            <tr>
+                <td> {{ key }} </td>
+                <td> {{ teamInfo['GroupName'] }} </td>
+                {% for i in range(value|length) %}
+
+                <td>
+                    {% if value[i] == 3 %}
+                    <b class="text-bg-danger">{{ '%02d' % i }}</b>
+                    {% elif value[i] == 2 %}
+                    <b class="text-bg-warning">{{ '%02d' % i }}</b>
+                    {% elif value[i] == 1 %}
+                    <b class="text-bg-success">{{ '%02d' % i }}</b>
+                    {% else %}
+                    <b>{{ '%02d' % i }}</b>
+                    {% endif %}
+                </td>
+
+                {% endfor %}
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 </body>

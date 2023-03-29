@@ -15,9 +15,11 @@
 import os
 import time
 import json
-import random 
+from random import randint
 import threading
 from datetime import datetime
+from collections import OrderedDict
+
 from influxdb import InfluxDBClient
 
 import monitorGlobal as gv
@@ -132,6 +134,7 @@ class clusterGraph(topologyGraph):
         self._idMapDict = {} # A map dict used map data manager's targets service count dict to the ids
         self._buildStateGraph()
 
+#-----------------------------------------------------------------------------
     def _buildStateGraph(self):
         n1 = self.addOneNode('172.25.123.220', 'dashboard', 2, 2)
         n2 = self.addOneNode('172.18.172.6 [JP]', 'jumphost', 4, 4)
@@ -182,6 +185,7 @@ class clusterGraph(topologyGraph):
         self._idMapDict['GPU3'] = int(n16)
         self.addOneEdge(n2, n16)
 
+#-----------------------------------------------------------------------------
     def updateNodesState(self, serveiceCountDict):
         for key in serveiceCountDict.keys():
             if key in self._idMapDict.keys():
@@ -189,6 +193,46 @@ class clusterGraph(topologyGraph):
                 online = serveiceCountDict[key]['online']
                 total = serveiceCountDict[key]['total']
                 self.updateNodeInfo(nodeId, online, total)
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class heatMapManager(object):
+
+    def __init__(self, columNum=10) -> None:
+        self.colNum = columNum
+        self.stateGroups = OrderedDict()
+
+    def getColNum(self):
+        return self.colNum
+    
+#-----------------------------------------------------------------------------
+    def addGroup(self, groupName, groupTagList):
+        stateDict = {}
+        for tag in groupTagList:
+            stateDict[tag] = [0]*self.colNum
+        self.stateGroups[groupName] = stateDict
+
+#-----------------------------------------------------------------------------
+    def updateGroupState(self, groupName, stateDict):
+        if groupName in self.stateGroups.keys():
+            for key in stateDict.keys():
+                if len(stateDict[key]) < self.colNum:
+                    stateDict[key] = stateDict[key] + [0]*(self.colNum - len(stateDict[key]))
+                self.stateGroups[groupName].update(stateDict)
+        else:
+            gv.gDebugPrint("The group [%s] is not added in the group dict" %str(groupName), logType=gv.LOG_WARN)
+
+#-----------------------------------------------------------------------------
+    def getHeatMapJson(self):
+        heatMapJson = {
+            'colNum': self.colNum,
+            'detail':[]
+        }
+        for key, val in self.stateGroups.items():
+            groupState = {'GroupName': key}
+            groupState.update(val)
+            heatMapJson['detail'].append(groupState)
+        return heatMapJson
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -389,10 +433,33 @@ class DataManager(threading.Thread):
         self.timeInterval = 30
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
+        
+        # create the heatmap manager
+        self.heatMapMgr = heatMapManager(columNum=15)
         self.terminate = False
 
     def setFetchInterval(self, timeInterval):
         self.timeInterval = timeInterval
+
+#-----------------------------------------------------------------------------
+    def addStateGroups(self):
+        groupTags = ['Group1', 'Group2', 'Group3', 'Group4', 'Group5']
+        serviceTags = ['DMZ-Service', 'Intranet-Service', 'IT-SOC-Tools', 'BUS-Clients', 'IT-SOC-Clients' ]
+        for tag in groupTags:
+            self.heatMapMgr.addGroup(tag, serviceTags)
+
+    def getHeatMapJson(self):
+        return self.heatMapMgr.getHeatMapJson() if self.heatMapMgr else {}
+
+    def createRandomHeatMapData(self):
+        groupTags = ['Group1', 'Group2', 'Group3', 'Group4', 'Group5']
+        serviceTags = ['DMZ-Service', 'Intranet-Service', 'IT-SOC-Tools', 'BUS-Clients', 'IT-SOC-Clients' ]
+        maxColNum = self.heatMapMgr.getColNum()
+        for tag in groupTags:
+            randStateDict = {}
+            for serviceT in serviceTags:
+                randStateDict[serviceT] = [randint(0,3) for _ in range(randint(5, maxColNum))]
+            self.heatMapMgr.updateGroupState(tag, randStateDict)
 
 #-----------------------------------------------------------------------------
     def addTargetConnector(self, ipaddress, port):

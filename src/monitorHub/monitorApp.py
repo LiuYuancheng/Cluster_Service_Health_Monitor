@@ -31,6 +31,8 @@ gv.iDataMgr = dataManager.DataManager(None, fetchMode=False)
 targetInfo = ('172.18.178.6', gv.UDP_PORT)
 #targetInfo = ('127.0.0.1', gv.UDP_PORT)
 gv.iDataMgr.addTargetConnector(targetInfo[0], targetInfo[1])
+gv.iDataMgr.addStateGroups()
+gv.iDataMgr.createRandomHeatMapData()
 gv.iDataMgr.start()
 
 #-----------------------------------------------------------------------------
@@ -64,15 +66,17 @@ def show_heatmap():
     heatmapJson = {
         'colNum':15,
         'detail': [
-            {   'TeamName': 'Group1',
-                'DMZ' : [1,2,3,0,0],
-                'Intranet-Service': [1,2,3,3,3],
-                'IT-SOC-Tools': [1,1,1,1,1],
-                'BUS-Clients': [1,2,3,0,0],
-                'IT-SOC-Clients': [1, 0, 0, 0, 0]
+            {   'GroupName': 'Group1',
+                'DMZ-Service' : [1,2,3,0,0]+[0]*10,
+                'Intranet-Service': [1,2,3,3,3]+[0]*10,
+                'IT-SOC-Tools': [1,1,1,1,1]+[0]*10,
+                'BUS-Clients': [1,2,3,0,0]+[0]*10,
+                'IT-SOC-Clients': [1, 0, 0, 0, 0]+[0]*10,
             }
         ]
     }
+    heatmapJson = gv.iDataMgr.getHeatMapJson()
+
     return render_template("heatmap.html", posts = heatmapJson)
 
 #-----------------------------------------------------------------------------
