@@ -56,7 +56,24 @@ def check_health():
 @app.route('/logo')
 def show_logo():
     full_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'ncl_logo.png')
-    return render_template("logo.html", user_image = full_filename)
+    return render_template("logo.html", logo_image = full_filename)
+
+# Ajax panel request handling
+@app.route('/heatmap')
+def show_heatmap():
+    heatmapJson = {
+        'colNum':15,
+        'detail': [
+            {   'TeamName': 'Group1',
+                'DMZ' : [1,2,3,0,0],
+                'Intranet-Service': [1,2,3,3,3],
+                'IT-SOC-Tools': [1,1,1,1,1],
+                'BUS-Clients': [1,2,3,0,0],
+                'IT-SOC-Clients': [1, 0, 0, 0, 0]
+            }
+        ]
+    }
+    return render_template("heatmap.html", posts = heatmapJson)
 
 #-----------------------------------------------------------------------------
 # Data post request handling 

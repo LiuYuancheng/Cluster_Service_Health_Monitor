@@ -439,9 +439,13 @@ class DataManager(threading.Thread):
             if self.dbhandler:
                 self.scoreCal.updateServiceInfo()
                 print("Update the database")
-                self.dbhandler.writeServiceInfo(gv.gMeasurement, self.scoreCal.getSericeInfo())
-                time.sleep(0.1)     
-                self.dbhandler.writeServiceInfo('test0_allService', self.scoreCal.getScoreInfo(None))
+                try:
+                    self.dbhandler.writeServiceInfo(gv.gMeasurement, self.scoreCal.getSericeInfo())
+                    time.sleep(0.1)     
+                    self.dbhandler.writeServiceInfo('test0_allService', self.scoreCal.getScoreInfo(None))
+                except Exception as err:
+                    gv.gDebugPrint("Error when update the dataBase: %s" %str(err), logType=gv.LOG_EXCEPT)
+                    self.dbhandler = None
                 if gv.iClusterGraph:
                     gv.iClusterGraph.updateNodesState(self.scoreCal.getSericeCounts())
             time.sleep(self.timeInterval)

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %} state heatmap {% endblock %}
+
+
+{% block style%}
+<style>
+    /* Make the image fully responsive 
+  .carousel-inner img {
+    width: 100%;
+    height: 50%;
+  }*/
+
+  td, th {
+    border-width: 2px;
+    }
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-3">
+  {% set tablewidth = 250+120+posts['colNum']*40 %}
+
+  <table class="table table-bordered table-sm table-dark table-striped" style="max-width: {{tablewidth}}px;">
+    <thead>
+      <tr>
+        <th style="width: 250px;">System</th>
+        <th style="width: 120px;">Zone</th>
+        {% for i in range(posts['colNum'])%}
+            <th style="width: 40px;">{{ '%02d' % i }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td > </td>
+        <td> </td>
+        <td> <b class="text-bg-success">00 </b></td>
+      </tr>
+      <tr>
+        <td> </td>
+        <td> </td>
+        <td class = "table-danger"> 00</td>
+      </tr>
+      <tr>
+        <td> </td>
+        <td> </td>
+        <td> </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+
+{% endblock %}
