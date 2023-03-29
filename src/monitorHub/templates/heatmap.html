@@ -2,7 +2,6 @@
 
 {% block title %} state heatmap {% endblock %}
 
-
 {% block style%}
 <style>
     /* Make the image fully responsive 
@@ -13,6 +12,22 @@
 </style>
 
 {% endblock %}
+
+
+{% block script %} 
+
+<script>
+
+    function timedRefresh(timeoutPeriod) {
+        setTimeout("location.reload(true);",timeoutPeriod);
+    }
+    
+    window.onload = timedRefresh(30000);
+
+</script>
+
+{% endblock %}
+
 
 {% block content %}
 
@@ -62,7 +77,5 @@
         </tbody>
     </table>
 </div>
-
-</body>
 
 {% endblock %}

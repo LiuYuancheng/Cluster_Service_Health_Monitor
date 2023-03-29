@@ -435,7 +435,7 @@ class DataManager(threading.Thread):
         self.scoreCal = scoreCalculator()
         
         # create the heatmap manager
-        self.heatMapMgr = heatMapManager(columNum=15)
+        self.heatMapMgr = heatMapManager(columNum=25)
         self.terminate = False
 
     def setFetchInterval(self, timeInterval):
@@ -448,7 +448,7 @@ class DataManager(threading.Thread):
         for tag in groupTags:
             self.heatMapMgr.addGroup(tag, serviceTags)
 
-    def getHeatMapJson(self):
+    def getHeatMapJson(self, testMode=True):            
         return self.heatMapMgr.getHeatMapJson() if self.heatMapMgr else {}
 
     def createRandomHeatMapData(self):
@@ -458,7 +458,7 @@ class DataManager(threading.Thread):
         for tag in groupTags:
             randStateDict = {}
             for serviceT in serviceTags:
-                randStateDict[serviceT] = [randint(0,3) for _ in range(randint(5, maxColNum))]
+                randStateDict[serviceT] = [max(1, randint(0,3)) for _ in range(randint(5, maxColNum))]
             self.heatMapMgr.updateGroupState(tag, randStateDict)
 
 #-----------------------------------------------------------------------------
@@ -515,6 +515,9 @@ class DataManager(threading.Thread):
                     self.dbhandler = None
                 if gv.iClusterGraph:
                     gv.iClusterGraph.updateNodesState(self.scoreCal.getSericeCounts())
+            if self.heatMapMgr:
+                self.createRandomHeatMapData()
+
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------
