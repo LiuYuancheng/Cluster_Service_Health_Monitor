@@ -1,12 +1,16 @@
 #-----------------------------------------------------------------------------
 # Name:        commManage.py
 #
-# Purpose:     Communication manager.
+# Purpose:     Communication channel managment module to handle different data/
+#              control connection requement. The feature provide are:
+#              - UDP server for data fetch request. 
+#              - UDP client for data auto-submission. 
+#              - HTTP/HTTPS client for data submittion.
 #              
 # Author:      Yuancheng Liu 
 #
-# Version:     v_0.2
-# Created:     2023/01/11
+# Version:     v_0.1
+# Created:     2023/03/26
 # Copyright:   
 # License:     
 #-----------------------------------------------------------------------------

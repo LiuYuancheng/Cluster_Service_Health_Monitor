@@ -1,0 +1,79 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 12,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 33,
+        "w": 15,
+        "x": 0,
+        "y": 0
+      },
+      "header_js": "{}",
+      "id": 2,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{}",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "templateResponse": true,
+      "title": "Groups State Table",
+      "type": "ryantxu-ajax-panel",
+      "url": "http://127.0.0.1:5000/heatmap",
+      "withCredentials": false
+    }
+  ],
+  "refresh": "",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Cluster_Service_State_Monitor",
+  "uid": "r_G8SUfVz",
+  "version": 8,
+  "weekStart": ""
+}

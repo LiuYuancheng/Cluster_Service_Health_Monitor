@@ -35,6 +35,7 @@ def initGlobalVal():
 
 #-----------------------------------------------------------------------------
 def initProbers(agent):
+    gv.gDebugPrint('Start to init the probers', logType=gv.LOG_INFO)
      # add a prober to check the Forni
     prober1 = probeAgent.Prober('FW', target='172.18.178.10')
     prober1.addProbAction(gv.iNetProbeDriver.checkPing)
@@ -166,6 +167,7 @@ def main():
     initGlobalVal()
     agent = probeAgent.ProbeAgent('172.18.178.6', timeInterval=60)
     initProbers(agent)
+    print("startRun")
     agent.startRun()
     print('Finish')
 

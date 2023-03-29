@@ -80,7 +80,7 @@ gMonitorHubAddr = {
     'udpPort': 3001
 }
 
-gTestMode = True
+gTestMode = False
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iCommMgr = None

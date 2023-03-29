@@ -134,5 +134,5 @@ class ProbeAgent(object):
                         gv.iDataMgr.archiveResult(data)
                 else:
                     gv.iDataMgr.archiveResult(self.crtResultDict)
-                gv.iCommMgr.reportTohub(gv.iDataMgr.getResultDict())
+                gv.iCommMgr.reportTohub(gv.iDataMgr.getResultDict(), udpMode=False)
             time.sleep(self.timeInterval)
