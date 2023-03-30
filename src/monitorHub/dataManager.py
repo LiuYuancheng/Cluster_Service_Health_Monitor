@@ -235,6 +235,20 @@ class heatMapManager(object):
         return heatMapJson
 
 #-----------------------------------------------------------------------------
+    def getDetailCounts(self):
+        resultJson = {}
+        for key, val in self.stateGroups.items():
+            onlineCount = 0
+            warningCount = 0
+            offlineCount = 0
+            for states in val.values():
+                onlineCount += states.count(1)
+                warningCount += states.count(2)
+                offlineCount += states.count(3)
+            resultJson[key] = [onlineCount, warningCount, offlineCount]
+        return resultJson
+    
+#-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class InfluxCli(object):
     """ Client to connect to the influx db and insert data."""
@@ -499,6 +513,18 @@ class DataManager(threading.Thread):
             gv.gDebugPrint('The agent [%s] is not registered, please add the agent first.' %str(ipaddr), logType=gv.LOG_WARN)
 
 #-----------------------------------------------------------------------------
+
+    def _convertToInfluxField(self, countsJson):
+        countField = {}
+        for key in countsJson.keys():
+            data = countsJson[key]
+            countField[key+'_ok'] = float(data[0])
+            countField[key+'_warn'] = float(data[1])
+            countField[key+'_critical'] = float(data[2])
+        return countField
+
+
+#-----------------------------------------------------------------------------
     def run(self):
         while not self.terminate:
             # fetch data from the agents
@@ -517,7 +543,8 @@ class DataManager(threading.Thread):
                     gv.iClusterGraph.updateNodesState(self.scoreCal.getSericeCounts())
             if self.heatMapMgr:
                 self.createRandomHeatMapData()
-
+                fielddata = self._convertToInfluxField(self.heatMapMgr.getDetailCounts())
+                self.dbhandler.writeServiceInfo('test0_allCounts', fielddata)
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------

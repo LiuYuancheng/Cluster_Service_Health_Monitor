@@ -64,15 +64,15 @@ def show_logo():
 @app.route('/heatmap')
 def show_heatmap():
     heatmapJson = {
-        'colNum':15,
+        'colNum': 15,
         'detail': [
-            {   'GroupName': 'Group1',
-                'DMZ-Service' : [1,2,3,0,0]+[0]*10,
-                'Intranet-Service': [1,2,3,3,3]+[0]*10,
-                'IT-SOC-Tools': [1,1,1,1,1]+[0]*10,
-                'BUS-Clients': [1,2,3,0,0]+[0]*10,
+            {'GroupName': 'Group1',
+                'DMZ-Service': [1, 2, 3, 0, 0]+[0]*10,
+                'Intranet-Service': [1, 2, 3, 3, 3]+[0]*10,
+                'IT-SOC-Tools': [1, 1, 1, 1, 1]+[0]*10,
+                'BUS-Clients': [1, 2, 3, 0, 0]+[0]*10,
                 'IT-SOC-Clients': [1, 0, 0, 0, 0]+[0]*10,
-            }
+             }
         ]
     }
     heatmapJson = gv.iDataMgr.getHeatMapJson()
