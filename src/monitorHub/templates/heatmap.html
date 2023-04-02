@@ -17,12 +17,12 @@
 {% block script %} 
 
 <script>
-
+    // Function to auto-refresh the page
     function timedRefresh(timeoutPeriod) {
         setTimeout("location.reload(true);",timeoutPeriod);
     }
     
-    window.onload = timedRefresh(30000);
+    window.onload = timedRefresh(30000); // refresh every 30 sec.
 
 </script>
 
