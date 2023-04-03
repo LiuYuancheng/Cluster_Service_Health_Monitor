@@ -23,7 +23,6 @@ print("Current working directory is : %s" % os.getcwd())
 DIR_PATH = dirpath = os.path.dirname(__file__)
 print("Current source code location : %s" % dirpath)
 APP_NAME = ('Prober', 'Agent')
-
 TOPDIR = 'src'
 LIBDIR = 'lib'
 
@@ -31,19 +30,20 @@ idx = dirpath.find(TOPDIR)
 gTopDir = dirpath[:idx + len(TOPDIR)] if idx != -1 else dirpath   # found it - truncate right after TOPDIR
 # Config the lib folder 
 gLibDir = os.path.join(gTopDir, LIBDIR)
-if os.path.exists(gLibDir):
-    sys.path.insert(0, gLibDir)
+if os.path.exists(gLibDir): sys.path.insert(0, gLibDir)
 import Log
 Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
 
-#import ConfigLoader
-#gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
-#iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
-#if iConfigLoader is None:
-#    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
-#    exit()
+import ConfigLoader
+CFG_FILE = 'agentConfig.txt'
+gGonfigPath = os.path.join(dirpath, CFG_FILE)
+print("Start to load config from config file: %s" %str(gGonfigPath))
+iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
+if iConfigLoader is None:
+    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
+    exit()
 
-#CONFIG_DICT = iConfigLoader.getJson()
+CONFIG_DICT = iConfigLoader.getJson()
 
 #------<CONSTANTS>-------------------------------------------------------------
 #UDP_PORT = int(CONFIG_DICT['HOST_PORT']) # host UDP port
@@ -73,14 +73,18 @@ def gDebugPrint(msg, prt=True, logType=None):
     elif logType == LOG_INFO or DEBUG_FLG:
         Log.info(msg)
 
+def gGetConfigVal(key, defaultVal=None):
+    if key in CONFIG_DICT.keys(): 
+        return CONFIG_DICT[key]
+    return defaultVal
+
 gMonitorHubAddr = {
-    # 'ipaddr': '172.25.123.220',
-    'ipaddr': '127.0.0.1',
-    'httpPort': 5000,
-    'udpPort': 3001
+    'ipaddr': gGetConfigVal('Hub_Addr', defaultVal='127.0.0.1'),
+    'httpPort': int(gGetConfigVal('Hub_Http_Port', defaultVal=5000)),
+    'udpPort':  int(gGetConfigVal('Hub_Udp_Port', defaultVal=3001))
 }
 
-gTestMode = False
+gTestMode = gGetConfigVal('Test_Mode', defaultVal=False)
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iCommMgr = None

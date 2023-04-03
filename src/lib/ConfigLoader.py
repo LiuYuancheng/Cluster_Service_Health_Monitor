@@ -89,6 +89,10 @@ class ConfigLoader(object):
         for line in self.configLines:
             if specChar in line:
                 key, val = line.split(':', 1)
+                if val.lower() == 'true':
+                    val = True
+                elif val.lower() == 'false': 
+                    val = False
                 result[key] = val
         return result
 

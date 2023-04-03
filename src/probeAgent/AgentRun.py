@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
-# Name:        commManage.py
+# Name:        AgentRun.py
 #
-# Purpose:     Communication manager.
+# Purpose:     The executable file.
 #              
 # Author:      Yuancheng Liu 
 #
