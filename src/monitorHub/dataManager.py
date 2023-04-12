@@ -246,7 +246,29 @@ class heatMapManager(object):
                 offlineCount += states.count(3)
             resultJson[key] = [onlineCount, warningCount, offlineCount]
         return resultJson
-    
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class timeLinePnlMgr(object):
+
+    def __init__(self, taglimit=20) -> None:
+        self.tagLimit = taglimit
+        self.timeLineList = []
+
+    def buildTimeLineTag(self, title, contents, htmlStr=None, timeStr=None):
+        timelineTag ={
+            'title' : title,
+            'tagSide': 'right',
+            'timeStr': timeStr if timeStr else str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S")),
+            'contents': contents,
+            'htmlStr': htmlStr
+        }
+        self.timeLineList.append(timelineTag)
+        if len(self.timeLineList) > self.tagLimit: self.timeLineList.pop(0)
+
+    def getTimeLineInfo(self):
+        return self.timeLineList.reverse()
+
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class InfluxCli(object):

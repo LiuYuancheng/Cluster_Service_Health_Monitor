@@ -80,9 +80,22 @@ def show_heatmap():
 
 @app.route('/newspanel')
 def show_newspanel():
-    picNameList = ['news_cidex.jpg', 'news_network.png']
+    picNameList = ['news_cidex.jpg', 'news_network.png', 'new_time.jpg','news_infra.png']
     newPicList = [ os.path.join(app.config['UPLOAD_FOLDER'], i) for i in picNameList ]
     return render_template("newspanel.html", posts = newPicList)
+
+
+@app.route('/timeline')
+def show_timeline():
+    
+    timeLineList = [{
+            'title' : "Day01:eventStart",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 10:20",
+            'contents': "Start CIDex 2022 event",
+            'htmlStr': r'<p style="color:blue;"> Blue Teams all login.</p>'
+        }]
+    return render_template("timeline.html", posts = timeLineList)
 
 #-----------------------------------------------------------------------------
 # Data post request handling 
