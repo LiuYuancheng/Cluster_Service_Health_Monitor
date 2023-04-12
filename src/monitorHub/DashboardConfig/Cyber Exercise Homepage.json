@@ -1,0 +1,176 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 14,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 19,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "###  Critical Infrastructure Defence Exercise (CIDeX) 2022\n\n---\n",
+        "mode": "markdown"
+      },
+      "pluginVersion": "9.4.3",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 5,
+        "x": 19,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "bgColor": "",
+        "clockType": "24 hour",
+        "countdownSettings": {
+          "endCountdownTime": "2023-04-12T18:12:57+08:00",
+          "endText": "00:00:00"
+        },
+        "countupSettings": {
+          "beginCountupTime": "2023-04-12T18:12:57+08:00",
+          "beginText": "00:00:00"
+        },
+        "dateSettings": {
+          "dateFormat": "YYYY-MM-DD",
+          "fontSize": "20px",
+          "fontWeight": "normal",
+          "locale": "",
+          "showDate": true
+        },
+        "mode": "time",
+        "refresh": "sec",
+        "timeSettings": {
+          "fontSize": "24px",
+          "fontWeight": "normal"
+        },
+        "timezone": "Singapore",
+        "timezoneSettings": {
+          "fontSize": "12px",
+          "fontWeight": "normal",
+          "showTimezone": true,
+          "zoneFormat": "nameOffset"
+        }
+      },
+      "pluginVersion": "2.1.3",
+      "type": "grafana-clock-panel"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 5,
+        "x": 0,
+        "y": 2
+      },
+      "id": 4,
+      "options": {
+        "folderId": 13,
+        "maxItems": 10,
+        "query": "",
+        "showHeadings": true,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": []
+      },
+      "pluginVersion": "9.4.3",
+      "title": "Dashboards List",
+      "type": "dashlist"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "a--OIr4Gk"
+      },
+      "gridPos": {
+        "h": 15,
+        "w": 12,
+        "x": 5,
+        "y": 2
+      },
+      "header_js": "{}",
+      "id": 2,
+      "method": "iframe",
+      "mode": "html",
+      "params_js": "{}",
+      "request": "http",
+      "responseType": "text",
+      "showErrors": true,
+      "showTime": false,
+      "showTimeFormat": "LTS",
+      "showTimeValue": "request",
+      "skipSameURL": true,
+      "templateResponse": true,
+      "title": "Cyber Exercise News",
+      "type": "ryantxu-ajax-panel",
+      "url": "http://127.0.0.1:5000/newspanel",
+      "withCredentials": false
+    }
+  ],
+  "refresh": "",
+  "revision": 1,
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Cyber Exercise Homepage",
+  "uid": "qe_uJ9Y4z",
+  "version": 5,
+  "weekStart": ""
+}
