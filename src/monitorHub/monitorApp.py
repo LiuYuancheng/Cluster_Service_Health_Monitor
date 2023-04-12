@@ -76,8 +76,13 @@ def show_heatmap():
         ]
     }
     heatmapJson = gv.iDataMgr.getHeatMapJson()
-
     return render_template("heatmap.html", posts = heatmapJson)
+
+@app.route('/newspanel')
+def show_newspanel():
+    picNameList = ['news_cidex.jpg', 'news_network.png']
+    newPicList = [ os.path.join(app.config['UPLOAD_FOLDER'], i) for i in picNameList ]
+    return render_template("newspanel.html", posts = newPicList)
 
 #-----------------------------------------------------------------------------
 # Data post request handling 

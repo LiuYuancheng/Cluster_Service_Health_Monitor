@@ -19,7 +19,6 @@ from random import randint
 import threading
 from datetime import datetime
 from collections import OrderedDict
-
 from influxdb import InfluxDBClient
 
 import monitorGlobal as gv
