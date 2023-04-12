@@ -255,19 +255,21 @@ class timeLinePnlMgr(object):
         self.tagLimit = taglimit
         self.timeLineList = []
 
-    def buildTimeLineTag(self, title, contents, htmlStr=None, timeStr=None):
+    def buildTimeLineTag(self, dataJson):
         timelineTag ={
-            'title' : title,
+            'title' : None,
             'tagSide': 'right',
-            'timeStr': timeStr if timeStr else str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S")),
-            'contents': contents,
-            'htmlStr': htmlStr
+            'timeStr': str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S")),
+            'contents': None,
+            'htmlStr': None
         }
+        timelineTag.update(dataJson)
         self.timeLineList.append(timelineTag)
         if len(self.timeLineList) > self.tagLimit: self.timeLineList.pop(0)
 
     def getTimeLineInfo(self):
-        return self.timeLineList.reverse()
+        self.timeLineList.reverse()
+        return self.timeLineList
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -471,6 +473,10 @@ class DataManager(threading.Thread):
         
         # create the heatmap manager
         self.heatMapMgr = heatMapManager(columNum=25)
+       
+        # create the timeline manager
+        self.timelineMgr = timeLinePnlMgr()
+
         self.terminate = False
 
     def setFetchInterval(self, timeInterval):
@@ -495,6 +501,73 @@ class DataManager(threading.Thread):
             for serviceT in serviceTags:
                 randStateDict[serviceT] = [max(1, randint(0,3)) for _ in range(randint(5, maxColNum))]
             self.heatMapMgr.updateGroupState(tag, randStateDict)
+
+#-----------------------------------------------------------------------------
+    def getTimelineJson(self):
+        return self.timelineMgr.getTimeLineInfo()
+
+    def buildTimeline(self):
+        print("build the timeline")
+        eventJson = {
+            'title' : "Day01: Cyber Exercise Start",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 10:20",
+            'contents': "CIDeX 2022 Cyber Exercise Started.",
+            'htmlStr': r'<p style="color:blue;"> Blue Teams all login.</p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+        eventJson = {
+            'title' : "Day01: Blue team report finish state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 11:30",
+            'htmlStr': r'<p style="color:blue;"> Blue Team01, Blue Team02, Blue Team04 submitted \
+                finished get familar get famili with the environment. Every thing normal.</p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+        eventJson = {
+            'title' : "Day01: Blue team report finish state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 11:55",
+            'htmlStr': r'<p style="color:blue;"> Blue Team03, Blue Team05 submitted \
+                finished get familar get famili with the environment. Every thing normal.</p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+
+        eventJson = {
+            'title' : "Day01: Red team report new state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 13:10",
+            'htmlStr': r'<p style="color:red;"> Warning: Red team start to scan the netwrok. </p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+        eventJson = {
+            'title' : "Day01: Red team report new state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 13:40",
+            'htmlStr': r'<p style="color:red;"> Alert: Red team start to launch ransomware attack on \
+                billing server. </p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+        eventJson = {
+            'title' : "Day01: Blue team-03 report new state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 12:10",
+            'htmlStr': r'<p style="color:blue;"> Blue team-03 report network and billing server connection exception.</p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
+
+        eventJson = {
+            'title' : "Day01: Blue team-04, team-01 report new state",
+            'tagSide': 'right',
+            'timeStr': "2022/11/15 12:10",
+            'htmlStr': r'<p style="color:blue;"> Blue team-04, team-01 report network and billing server connection exception.</p>'
+        }
+        self.timelineMgr.buildTimeLineTag(eventJson)
 
 #-----------------------------------------------------------------------------
     def addTargetConnector(self, ipaddress, port):

@@ -33,6 +33,7 @@ targetInfo = ('172.18.178.6', gv.UDP_PORT)
 gv.iDataMgr.addTargetConnector(targetInfo[0], targetInfo[1])
 gv.iDataMgr.addStateGroups()
 gv.iDataMgr.createRandomHeatMapData()
+gv.iDataMgr.buildTimeline()
 gv.iDataMgr.start()
 
 #-----------------------------------------------------------------------------
@@ -84,17 +85,9 @@ def show_newspanel():
     newPicList = [ os.path.join(app.config['UPLOAD_FOLDER'], i) for i in picNameList ]
     return render_template("newspanel.html", posts = newPicList)
 
-
 @app.route('/timeline')
 def show_timeline():
-    
-    timeLineList = [{
-            'title' : "Day01:eventStart",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 10:20",
-            'contents': "Start CIDex 2022 event",
-            'htmlStr': r'<p style="color:blue;"> Blue Teams all login.</p>'
-        }]
+    timeLineList = gv.iDataMgr.getTimelineJson()
     return render_template("timeline.html", posts = timeLineList)
 
 #-----------------------------------------------------------------------------
