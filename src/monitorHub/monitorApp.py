@@ -13,9 +13,11 @@
 #-----------------------------------------------------------------------------
 
 import os
+import time
 import json
+import cv2
 
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, Response
 import monitorGlobal as gv
 import dataManager
 
@@ -35,6 +37,26 @@ gv.iDataMgr.addStateGroups()
 gv.iDataMgr.createRandomHeatMapData()
 gv.iDataMgr.buildTimeline()
 gv.iDataMgr.start()
+
+CAM_FLG = False # flag to integrate in the camera.
+fps_num = 20
+camera = cv2.VideoCapture(0) if CAM_FLG else None
+# camera = cv2.VideoCapture('rtsp://freja.hiof.no:1935/rtplive/_definst_/hessdalen03.stream')  # use 0 for web camera
+# for cctv camera use rtsp://username:password@ip_address:554/user=username_password='password'_channel=channel_number_stream=0.sdp' instead of camera
+# for local webcam use cv2.VideoCapture(0)
+
+def gen_frames():  # generate frame by frame from camera
+    while True:
+        # Capture frame-by-frame
+        success, frame = camera.read()  # read the camera frame
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
+        time.sleep(1.0/fps_num)
 
 #-----------------------------------------------------------------------------
 # graph request handling
@@ -83,12 +105,18 @@ def show_heatmap():
 def show_newspanel():
     picNameList = ['news_cidex.jpg', 'news_network.png', 'new_time.jpg','news_infra.png']
     newPicList = [ os.path.join(app.config['UPLOAD_FOLDER'], i) for i in picNameList ]
+    if CAM_FLG: newPicList.append('video_feed') # command this line if don't want plug in the camera
     return render_template("newspanel.html", posts = newPicList)
 
 @app.route('/timeline')
 def show_timeline():
     timeLineList = gv.iDataMgr.getTimelineJson()
     return render_template("timeline.html", posts = timeLineList)
+
+@app.route('/video_feed')
+def video_feed():
+    #Video streaming route. Put this in the src attribute of an img tag
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
 #-----------------------------------------------------------------------------
 # Data post request handling 
