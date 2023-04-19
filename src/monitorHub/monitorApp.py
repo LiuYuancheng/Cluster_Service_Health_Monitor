@@ -38,7 +38,7 @@ gv.iDataMgr.createRandomHeatMapData()
 gv.iDataMgr.buildTimeline()
 gv.iDataMgr.start()
 
-CAM_FLG = False # flag to integrate in the camera.
+CAM_FLG = True # flag to integrate in the camera.
 fps_num = 20
 camera = cv2.VideoCapture(0) if CAM_FLG else None
 # camera = cv2.VideoCapture('rtsp://freja.hiof.no:1935/rtplive/_definst_/hessdalen03.stream')  # use 0 for web camera

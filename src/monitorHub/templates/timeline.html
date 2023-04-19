@@ -161,29 +161,25 @@ body {
 }
 </style>
 </head>
+
 <body>
+  <div class="timeline">
+    {% for timeTag in posts %}
+      <div class="container {{timeTag['tagSide']}}">
+          <div class="content">
+              <h4> [{{ timeTag['timeStr']}}] {{ timeTag['title'] }} </h4>
+              
+              {% if timeTag['contents'] %} 
+                  <p> {{ timeTag['contents'] }} </p>
+              {% endif %}
 
-<div class="timeline">
+              {% if timeTag['htmlStr'] %} 
+                  {{ timeTag['htmlStr'] | safe }} 
+              {% endif %}
 
-{% for timeTag in posts %}
-
-    <div class="container {{timeTag['tagSide']}}">
-        <div class="content">
-            <h4> [{{ timeTag['timeStr']}}] {{ timeTag['title'] }} </h4>
-            {% if timeTag['contents'] %} 
-                <p> {{ timeTag['contents'] }} </p>
-            {% endif %}
-
-            {% if timeTag['htmlStr'] %} 
-                {{ timeTag['htmlStr'] | safe }} 
-            {% endif %}
-
-        </div>
-    </div>
-
-{% endfor %}
-
-</div>
-
+          </div>
+      </div>
+    {% endfor %}
+  </div>
 </body>
 </html>

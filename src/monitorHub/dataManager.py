@@ -15,8 +15,8 @@
 import os
 import time
 import json
-from random import randint
 import threading
+from random import randint
 from datetime import datetime
 from collections import OrderedDict
 from influxdb import InfluxDBClient
