@@ -1,0 +1,18 @@
+# This is the config file template for the module <monitorApp.py>
+# Setup the paramter with below format (every line follow <key>:<val> format, the
+# key can not be changed):
+
+# Score database info
+scoreDB_Ip:localhost
+scoreDB_Port:8086
+scoreDB_User:root
+scoreDB_Pwd:root
+scoreDB_Name:gatewayDB
+
+# Test mode flag
+Test_Mode:True
+
+# Set plug in cameras
+cam_Flg:False
+cam_Fps:20
+cam_Src:local

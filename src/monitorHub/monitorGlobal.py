@@ -36,14 +36,14 @@ if os.path.exists(gLibDir):
 import Log
 Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
 
-#import ConfigLoader
-#gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
-#iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
-#if iConfigLoader is None:
-#    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
-#    exit()
+import ConfigLoader
+gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
+iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
+if iConfigLoader is None:
+    print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
+    exit()
 
-#CONFIG_DICT = iConfigLoader.getJson()
+CONFIG_DICT = iConfigLoader.getJson()
 
 #------<CONSTANTS>-------------------------------------------------------------
 #UDP_PORT = int(CONFIG_DICT['HOST_PORT']) # host UDP port
@@ -75,8 +75,18 @@ def gDebugPrint(msg, prt=True, logType=None):
     elif logType == LOG_INFO or DEBUG_FLG:
         Log.info(msg)
 
-gDataTale = 'gatewayDB'   # influx DB table name.
+# Set raw database parameters
+
+# Set score database parameters
+gScoreDBAddr = (CONFIG_DICT['scoreDB_Ip'], int(CONFIG_DICT['scoreDB_Port']))
+gScoreDBInfo = (CONFIG_DICT['scoreDB_User'], CONFIG_DICT['scoreDB_Pwd'], CONFIG_DICT['scoreDB_Name'])
+
 gMeasurement = 'as06_services'
+
+# Dashboard video paramters
+gCamFlg = CONFIG_DICT['cam_Flg']
+gCamFps = int(CONFIG_DICT['cam_Fps'])
+gCamSrc = 0 if CONFIG_DICT['cam_Src'] == 'local' else CONFIG_DICT['cam_Src']
 
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None

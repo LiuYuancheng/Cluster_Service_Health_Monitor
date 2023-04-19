@@ -19,11 +19,13 @@ import threading
 from random import randint
 from datetime import datetime
 from collections import OrderedDict
-from influxdb import InfluxDBClient
+#from influxdb import InfluxDBClient
 
 import monitorGlobal as gv
 import Log
 import udpCom
+from databaseHandler import InfluxDB1Cli
+
 
 # Define all the module local untility functions here:
 #-----------------------------------------------------------------------------
@@ -465,7 +467,7 @@ class DataManager(threading.Thread):
         self.connectorsDict = dict() if self.fetchMode else None
         self.rawDataDict = dict()   # The dictionary used to save the raw data.
         # set the score database client
-        self.dbhandler = InfluxCli(ipAddr=('localhost', 8086), dbInfo=('root', 'root', gv.gDataTale))
+        self.scoreDBhandler = InfluxDB1Cli(ipAddr=gv.gScoreDBAddr, dbInfo=gv.gScoreDBInfo)
 
         self.timeInterval = 30
         # the percentage will be shown on dashboard.

@@ -3,7 +3,7 @@
 # Name:        databaseHandler.py
 #
 # Purpose:     This module will provide several database clients to connect to 
-#              different kind of data base to implement query execution, table 
+#              different kinds of database to implement query execution, table 
 #              create, data insert, update and delete. 
 #              
 #
@@ -16,8 +16,11 @@
 #-----------------------------------------------------------------------------
 
 # incluxdb Doc: https://influxdb-python.readthedocs.io/en/latest/examples.html
+
 from influxdb import InfluxDBClient
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 class dbHandler(object):
     def __init__(self, databaseName=None) -> None:
         self.dbConnected = False
@@ -28,25 +31,28 @@ class dbHandler(object):
             print("Database [%s] handler init fail: DB connection error." %str(databaseName))
 
     def _testConnect(self):
-        if self.getTablsList():
+        if self.getTableList():
             self.dbConnected = True
 
     def createTable(self, tableName):
         return None 
 
-    def getTablsList(self):
+    def getTableList(self):
         return None 
 
     def dropTable(self, tableName):
-        return None 
+        return None
+    
+    def executeQuery(self, queryStr):
+        return None
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
-class InfluxCli(dbHandler):
-    """ Client to connect to the influx db and insert data."""
+class InfluxDB1Cli(dbHandler):
+    """ Client to connect to the influxDB1.X and insert data to single DB."""
 
     def __init__(self, ipAddr=None, dbInfo=None) -> None:
-        """ Init the influx DB client to login to the data base. dbInfo: name, 
+        """ Init the influxDB1.X client to login to the data base. dbInfo: name, 
             password, databaseName. init example: 
             client = InfluxCli(ipAddr=('127.0.0.1', 8086), dbinfo=('root', 'root', 'gatewayDB'))
         """
@@ -55,6 +61,7 @@ class InfluxCli(dbHandler):
             dbInfo) == 3 else ('root', 'root', 'gatewayDB')
         #self.dbClient = InfluxDBClient('localhost', 8086, 'root', 'root', 'quantumGWDB')
         # link to data base:
+        self.defaultTag = {"Name": "time"}
         try:
             self.dbClient = InfluxDBClient(ip, port, user, pwd, dbName)
         except Exception as e:
@@ -63,12 +70,43 @@ class InfluxCli(dbHandler):
                 + "- Ubuntu:    sudo systemctl start influxdb")
             exit()
         super().__init__(databaseName='InfluxDB1.8.1')
+
+    #-----------------------------------------------------------------------------
+    def insertFields(self, measurement, fieldDict, tags=None, timeStr=None):
+        """ Insert the fileds to a measurement immediately."""
+        if not self.dbConnected: return False
+        dataJoson = {   "measurement": str(measurement),
+                        "tags": self.defaultTag if tags is None else tags,
+                        "fields": fieldDict
+                    }
+        if timeStr: dataJoson['time'] = timeStr
+        return self.insertPoints([dataJoson])
+
+    #-----------------------------------------------------------------------------
+    def insertPoints(self, pointList):
+        try:
+            return self.dbClient.write_points(pointList)
+        except Exception as err:
+            print("Error to write points: %s " %str(pointList))
+            print("Exception: %s " %str(err))
+            return False
         
     #-----------------------------------------------------------------------------
-    def getTablsList(self):
+    def dropTable(self, tableName):
+        if self.dbConnected: self.dbClient.drop_measurement(tableName)
+        return self.dbConnected
+
+    #-----------------------------------------------------------------------------
+    def executeQuery(self, queryStr, bind_params=None):
+        if self.dbConnected:
+            bindParams = self.defaultTag if bind_params is None else bind_params
+            return self.dbClient.query(queryStr, bind_params=bindParams)
+        return None
+
+    #-----------------------------------------------------------------------------
+    def getTableList(self):
         try:
-            if self.dbClient.ping():
-                return self.dbClient.get_list_measurements()
+            if self.dbClient.ping(): return self.dbClient.get_list_measurements()
             print("InfluxDB server does not response ping() ")
             return None
         except:
@@ -76,20 +114,6 @@ class InfluxCli(dbHandler):
             return None
 
     #-----------------------------------------------------------------------------
-    def dropTable(self, tableName):
-        if self.dbConnected:
-            self.dbClient.drop_measurement(tableName)
-        return self.dbConnected
-
-    #-----------------------------------------------------------------------------
-    def insertToFields(self, measurement, fieldDict):
-        """ Write the score data to the related gateway table."""
-        dataJoson = [
-            {   "measurement": str(measurement),
-                "tags": { "Name": "time",},
-                "fields": fieldDict
-            }]
-        self.dbClient.write_points(dataJoson)
-
-
+    def setDefaultTag(self, tagJson):
+        self.defaultTag = tagJson
 
