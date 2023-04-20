@@ -1,0 +1,10 @@
+[
+    {
+        "evtTitle" : "Cyber Exercise Start",
+        "dayNum": 0,
+        "evtType": "announce",
+        "teamName": "BlackTeam",
+        "evtState": "CIDeX 2022 Cyber Exercise Started.Blue Teams all login."
+    }
+
+]

@@ -85,9 +85,7 @@ def show_heatmap():
 @app.route('/newspanel')
 def show_newspanel():
     newPicList = gv.iCarouselMgr.getFlaskImgPaths()
-    print("--->")
-    print(newPicList)
-    if gv.iCamMgr: newPicList.append('video_feed') # command this line if don't want plug in the camera
+    if gv.iCamMgr: newPicList.append('video_feed') # Plugin the camera.
     return render_template("newspanel.html", posts = newPicList)
 
 @app.route('/timeline')

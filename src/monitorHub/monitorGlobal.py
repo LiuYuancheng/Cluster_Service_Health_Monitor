@@ -63,6 +63,9 @@ PROB_TP_LOCAL = 0   # Prob touch the current node
 # the UDP ports
 UDP_PORT = 3001
 
+DB_PATH = os.path.join(dirpath, 'database.db')
+SQL_PATH = os.path.join(dirpath, 'schema.sql')
+
 #-------<GLOBAL VARIABLES (start with "g")>-------------------------------------
 def gDebugPrint(msg, prt=True, logType=None):
     if prt: print(msg)

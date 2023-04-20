@@ -18,7 +18,6 @@ import json
 import threading
 from random import randint
 from datetime import datetime
-from collections import OrderedDict
 #from influxdb import InfluxDBClient
 
 import monitorGlobal as gv
@@ -26,7 +25,7 @@ import Log
 import udpCom
 from databaseHandler import InfluxDB1Cli
 
-from monitorUtils import topologyGraph
+from monitorUtils import topologyGraph, heatMapManager
 
 
 # Define all the module local untility functions here:
@@ -113,60 +112,6 @@ class clusterGraph(topologyGraph):
                 online = serveiceCountDict[key]['online']
                 total = serveiceCountDict[key]['total']
                 self.updateNodeInfo(nodeId, online, total)
-
-#-----------------------------------------------------------------------------
-#-----------------------------------------------------------------------------
-class heatMapManager(object):
-
-    def __init__(self, columNum=10) -> None:
-        self.colNum = columNum
-        self.stateGroups = OrderedDict()
-
-    def getColNum(self):
-        return self.colNum
-    
-#-----------------------------------------------------------------------------
-    def addGroup(self, groupName, groupTagList):
-        stateDict = {}
-        for tag in groupTagList:
-            stateDict[tag] = [0]*self.colNum
-        self.stateGroups[groupName] = stateDict
-
-#-----------------------------------------------------------------------------
-    def updateGroupState(self, groupName, stateDict):
-        if groupName in self.stateGroups.keys():
-            for key in stateDict.keys():
-                if len(stateDict[key]) < self.colNum:
-                    stateDict[key] = stateDict[key] + [0]*(self.colNum - len(stateDict[key]))
-                self.stateGroups[groupName].update(stateDict)
-        else:
-            gv.gDebugPrint("The group [%s] is not added in the group dict" %str(groupName), logType=gv.LOG_WARN)
-
-#-----------------------------------------------------------------------------
-    def getHeatMapJson(self):
-        heatMapJson = {
-            'colNum': self.colNum,
-            'detail':[]
-        }
-        for key, val in self.stateGroups.items():
-            groupState = {'GroupName': key}
-            groupState.update(val)
-            heatMapJson['detail'].append(groupState)
-        return heatMapJson
-
-#-----------------------------------------------------------------------------
-    def getDetailCounts(self):
-        resultJson = {}
-        for key, val in self.stateGroups.items():
-            onlineCount = 0
-            warningCount = 0
-            offlineCount = 0
-            for states in val.values():
-                onlineCount += states.count(1)
-                warningCount += states.count(2)
-                offlineCount += states.count(3)
-            resultJson[key] = [onlineCount, warningCount, offlineCount]
-        return resultJson
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
