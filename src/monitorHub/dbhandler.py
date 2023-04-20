@@ -13,44 +13,41 @@
 
 import os
 import json
+import time
 import sqlite3
+from random import randint
 from datetime import datetime, timedelta
 from monitorGlobal import DB_PATH, SQL_PATH, dirpath
+from databaseHandler import Sqlite3Cli
 
-connection = sqlite3.connect(DB_PATH)
-
-def resetDB():
-    print("Clean and reset all the tables.")
-    with open(SQL_PATH) as fh:
-        connection.executescript(fh.read())
+connection = Sqlite3Cli(DB_PATH, databaseName = "Raw_DataBase")
 
 def testCase(mode):
 
     if mode == 0:
-        resetDB()
+        connection.executeScript(SQL_PATH)
     elif mode == 1:
         print("Reset DB and test insert data")
-        resetDB()
-        cur = connection.cursor()
+        connection.executeScript(SQL_PATH)
         timelineExampleJson = os.path.join(dirpath, 'timeLineExample.json')
         with open(timelineExampleJson, 'r') as f:
             evtJsonList = json.load(f)
             for item in evtJsonList:
+                print("Insert test data.")
                 evtTitle = item['evtTitle']
                 dayNum = int(item['dayNum'])
                 evtType = item['evtType']
                 teamName = item['teamName']
                 evtState = item['evtState']
-                cur.execute('INSERT INTO evtTimeline \
-                    (evtTitle, dayNum, evtType, teamName, evtState)\
-                    VALUES (?, ?, ?, ?, ?)',
-                    (evtTitle, dayNum, evtType, teamName, evtState))
+                querStr = 'INSERT INTO evtTimeline (evtTitle, dayNum, evtType, teamName, evtState) VALUES (?, ?, ?, ?, ?)'
+                paramters = (evtTitle, dayNum, evtType, teamName, evtState)
+                connection.executeQuery(querStr, paramList=paramters)
+                time.sleep(randint(5, 10))
     else:
         pass
         # Add your test code here and change the mode part to active it.
-    connection.commit()
     connection.close()
 
 if __name__ == '__main__':
-    mode = 0
+    mode = 1
     testCase(mode)

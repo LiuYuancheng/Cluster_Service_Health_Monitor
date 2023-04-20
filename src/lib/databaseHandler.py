@@ -15,8 +15,10 @@
 # License:     
 #-----------------------------------------------------------------------------
 
-# incluxdb Doc: https://influxdb-python.readthedocs.io/en/latest/examples.html
+import os
+import sqlite3
 
+# incluxdb Doc: https://influxdb-python.readthedocs.io/en/latest/examples.html
 from influxdb import InfluxDBClient
 
 #-----------------------------------------------------------------------------
@@ -46,6 +48,57 @@ class dbHandler(object):
     def executeQuery(self, queryStr):
         return None
 
+    def close(self):
+        self.dbConnected = False
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+class Sqlite3Cli(dbHandler):
+
+    def __init__(self, dbPath, databaseName=None) -> None:
+        if not os.path.exists(dbPath):
+            print("Error: sqlite3DB file %s not exist, exit() called" %str(dbPath))
+            exit()
+        self.dbPath = dbPath
+        self.dbConn = None  # data base 
+        self.dbCursor = None
+        super().__init__(databaseName)
+
+    def _initConn(self):
+        try:
+            self.dbConn = sqlite3.connect(self.dbPath)
+            self.dbConn.row_factory = sqlite3.Row
+            self.dbCursor = self.dbConn.cursor()
+            return True
+        except Exception as err:
+            print("Error to connect to dataabse: %s" %str(err))
+            return False
+        
+    def _testConnect(self):
+        self.dbConnected = self._initConn()
+
+    def getTableList(self):
+        queryStr = """SELECT name FROM sqlite_master WHERE type='table';"""
+        self.executeQuery(queryStr)
+        result = self.dbCursor.fetchall()
+        return result
+
+    def executeQuery(self, queryStr, paramList=None):
+        if paramList and isinstance(paramList, tuple):
+            self.dbCursor.execute(queryStr, paramList)
+        else:
+            self.dbCursor.execute(queryStr)
+        self.dbConn.commit()
+
+    def executeScript(self, scriptPath):
+        with open(scriptPath) as fh:
+            self.dbConn.executescript(fh.read())
+        self.dbConn.commit()
+
+    def close(self):
+        self.dbConn.close()
+        return super().close()
+        
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class InfluxDB1Cli(dbHandler):
@@ -117,3 +170,5 @@ class InfluxDB1Cli(dbHandler):
     def setDefaultTag(self, tagJson):
         self.defaultTag = tagJson
 
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
