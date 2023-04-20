@@ -160,7 +160,6 @@ class newsCarouselMgr(object):
                 gv.gDebugPrint("new carousel config json file open error")
         return [ os.path.join(self.newsDir, 'news', i) for i in self.flaskImgPathList ]
     
-
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class heatMapManager(object):

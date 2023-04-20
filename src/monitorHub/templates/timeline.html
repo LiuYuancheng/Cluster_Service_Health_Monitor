@@ -35,6 +35,27 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+/* Scroll to top button */
+#toTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  background-color: #555;
+  color: white;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+#toTopBtn:hover {
+  background-color: #555;
+}
+
 /* buttons */
 .btn {
   border: none;
@@ -189,6 +210,7 @@ body {
 </head>
 
 <body>
+  <button onclick="topFunction()" id="toTopBtn" title="Go to top">Scroll To Top</button>
   <div class="timeline">
     {% for timeTag in posts %}
       <div class="container {{timeTag['tagSide']}}">
@@ -221,5 +243,28 @@ body {
       </div>
     {% endfor %}
   </div>
+
+  <script>
+    // Get the button
+    let mybutton = document.getElementById("toTopBtn");
+    
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+    
+    function scrollFunction() {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    }
+    
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+    </script>
+
 </body>
 </html>

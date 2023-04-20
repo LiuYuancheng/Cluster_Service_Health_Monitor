@@ -67,7 +67,7 @@ class Sqlite3Cli(dbHandler):
 
     def _initConn(self):
         try:
-            self.dbConn = sqlite3.connect(self.dbPath)
+            self.dbConn = sqlite3.connect(self.dbPath, check_same_thread=False)
             if self.rowFactor: self.dbConn.row_factory = self.rowFactor
             self.dbCursor = self.dbConn.cursor()
             return True

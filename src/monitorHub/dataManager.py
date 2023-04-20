@@ -115,29 +115,6 @@ class clusterGraph(topologyGraph):
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
-class timeLinePnlMgr(object):
-
-    def __init__(self, taglimit=20) -> None:
-        self.tagLimit = taglimit
-        self.timeLineList = []
-
-    def buildTimeLineTag(self, dataJson):
-        timelineTag ={
-            'title' : None,
-            'tagSide': 'right',
-            'timeStr': str(datetime.now().strftime("%m/%d/%Y, %H:%M:%S")),
-            'contents': None,
-            'htmlStr': None
-        }
-        timelineTag.update(dataJson)
-        self.timeLineList.append(timelineTag)
-        if len(self.timeLineList) > self.tagLimit: self.timeLineList.pop(0)
-
-    def getTimeLineInfo(self):
-        return self.timeLineList
-
-#-----------------------------------------------------------------------------
-#-----------------------------------------------------------------------------
 class InfluxCli(object):
     """ Client to connect to the influx db and insert data."""
     def __init__(self, ipAddr=None, dbInfo=None):
@@ -340,10 +317,6 @@ class DataManager(threading.Thread):
         
         # create the heatmap manager
         self.heatMapMgr = heatMapManager(columNum=25)
-       
-        # create the timeline manager
-        self.timelineMgr = timeLinePnlMgr()
-
         self.terminate = False
 
     def setFetchInterval(self, timeInterval):
@@ -371,12 +344,13 @@ class DataManager(threading.Thread):
 
 #-----------------------------------------------------------------------------
     def getTimelineJson(self):
-        return self.timelineMgr.getTimeLineInfo()
+        return self.buildTimeline()
 
     def buildTimeline(self):
         querStr = 'SELECT * FROM %s ORDER BY updateT DESC LIMIT 10' %str(gv.gRaw_TimelineTB)
         self.rawDBhandler.executeQuery(querStr)
         reuslt = self.rawDBhandler.getCursor().fetchall()
+        timelintList = []
         for item in reuslt:
             teamType = 0
             if 'Red' in item[5]: teamType = 1
@@ -391,7 +365,8 @@ class DataManager(threading.Thread):
                 'contents': item[6],
                 'htmlStr': None
             }
-            self.timelineMgr.buildTimeLineTag(eventJson)
+            timelintList.append(eventJson)
+        return timelintList
 
 #-----------------------------------------------------------------------------
     def addTargetConnector(self, ipaddress, port):
