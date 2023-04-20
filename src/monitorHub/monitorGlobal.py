@@ -37,7 +37,7 @@ import Log
 Log.initLogger(gTopDir, 'Logs', APP_NAME[0], APP_NAME[1], historyCnt=100, fPutLogsUnderDate=True)
 
 import ConfigLoader
-gGonfigPath = os.path.join(dirpath, 'scheduleCfg.txt')
+gGonfigPath = os.path.join(dirpath, 'monitorConfig.txt')
 iConfigLoader = ConfigLoader.ConfigLoader(gGonfigPath, mode='r')
 if iConfigLoader is None:
     print("Error: The config file %s is not exist.Program exit!" %str(gGonfigPath))
@@ -88,6 +88,11 @@ gCamFlg = CONFIG_DICT['cam_Flg']
 gCamFps = int(CONFIG_DICT['cam_Fps'])
 gCamSrc = 0 if CONFIG_DICT['cam_Src'] == 'local' else CONFIG_DICT['cam_Src']
 
+# 
+gCrouselJsonPath = os.path.join(dirpath, 'static', 'img', 'news', CONFIG_DICT['news_Json'])
+
 #-------<GLOBAL INSTANCES (start with "i")>-------------------------------------
 iDataMgr = None
+iCamMgr = None
+iCarouselMgr = None
 iClusterGraph = None

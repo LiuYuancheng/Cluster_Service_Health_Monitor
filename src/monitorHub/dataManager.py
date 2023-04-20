@@ -26,6 +26,8 @@ import Log
 import udpCom
 from databaseHandler import InfluxDB1Cli
 
+from monitorUtils import topologyGraph
+
 
 # Define all the module local untility functions here:
 #-----------------------------------------------------------------------------
@@ -42,89 +44,6 @@ def parseIncomeMsg(msg):
         Log.exception(err)
     return (reqKey.strip(), reqType.strip(), reqJsonStr)
 
-#-----------------------------------------------------------------------------
-#-----------------------------------------------------------------------------
-class topologyGraph(object):
-    """ The topology graph follow the grafana <Node Graph API>, to create the 
-        health state network map. 
-        Doc link: https://grafana.com/grafana/plugins/hamedkarbasi93-nodegraphapi-datasource/
-        github link: https://github.com/hoptical/nodegraph-api-plugin
-    """
-    def __init__(self) -> None:
-        self.nodes = []
-        self.edges = []
-        self.nodeCount = 0
-        self.edgeCount = 0
-        self.nodes_fields = [{"field_name": "id", "type": "string"},
-                    {"field_name": "title", "type": "string", "displayName": "ipAddr"},
-                    {"field_name": "subTitle", "type": "string", "displayName": "health"},
-                    {"field_name": "mainStat", "type": "string", "color": "green", "displayName": "onlineNum"},
-                    {"field_name": "secondaryStat", "type": "string", "color": "red", "displayName": "offlineNum"},
-                    {"field_name": "arc__failed", "type": "number", "color": "red", "displayName": "offline%"},
-                    {"field_name": "arc__passed", "type": "number", "color": "green", "displayName": "online%"},
-                    {"field_name": "detail__role","type": "string", "displayName": "NodeType"}]
-        self.edges_fields = [{"field_name": "id", "type": "string"},
-                    {"field_name": "source", "type": "string"},
-                    {"field_name": "target", "type": "string"}] #,{"field_name": "mainStat", "type": "number"},
-                    
-#-----------------------------------------------------------------------------
-    def addOneNode(self, ipAddr, role, online, total):
-        """ Add a new node in the graph
-            Args:
-                ipAddr (str): _description_
-                role (str): _description_
-                online (int): the number of online service.
-                total (int): total service.
-            Returns: str: the new ID.
-        """
-        idStr = str(self.nodeCount)
-        onlinePct = round(float(online)/total, 3)
-        offlinePct = round(float(total-online)/total, 3)
-        nodeInfo = {"id": idStr,
-                    "title": ipAddr,
-                    "subTitle": str(online)+' / ' + str(total),
-                    "detail__role": role,
-                    "mainStat": str(onlinePct*100)+'%',
-                    "secondaryStat": str(offlinePct*100)+'%',
-                    "arc__passed": onlinePct,
-                    "arc__failed": offlinePct}
-        self.nodes.append(nodeInfo)
-        self.nodeCount += 1
-        return idStr
-    
-#-----------------------------------------------------------------------------
-    def addOneEdge(self, srcID, tgtID, Info=None):
-        self.edgeCount += 1
-        edgeInfo = {"id": str(self.edgeCount), "source": str(srcID), "target": str(tgtID)}
-        self.edges.append(edgeInfo)
-
-#-----------------------------------------------------------------------------
-    def getNodes(self):
-        return self.nodes
-    
-    def getEdges(self):
-        return self.edges
-    
-    def getNodeFields(self):
-        return self.nodes_fields
-    
-    def getEdgeFields(self):
-        return self.edges_fields
-
-#-----------------------------------------------------------------------------
-    def updateNodeInfo(self, id, online, total):
-        if 0 < id <  self.nodeCount:
-            onlinePct = round(float(online)/total, 3)
-            offlinePct = round(float(total-online)/total, 3)
-            self.nodes[int(id)]['subTitle'] = str(online)+' / ' + str(total)
-            self.nodes[int(id)]['mainStat'] = str(onlinePct*100)+'%'
-            self.nodes[int(id)]['secondaryStat'] = str(offlinePct*100)+'%'
-            self.nodes[int(id)]['arc__passed'] = onlinePct
-            self.nodes[int(id)]['arc__failed'] = offlinePct
-            return True
-        else: 
-            gv.gDebugPrint("The node [%s] is not exist, can not update" %str(id), logType=gv.LOG_INFO)
-            return False
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -625,22 +544,22 @@ class DataManager(threading.Thread):
         while not self.terminate:
             # fetch data from the agents
             if self.fetchMode and self.scoreCal: self.fetchData(cmd='GET;data;fetch')
-            if self.dbhandler:
+            if self.scoreDBhandler:
                 self.scoreCal.updateServiceInfo()
                 print("Update the database")
                 try:
-                    self.dbhandler.writeServiceInfo(gv.gMeasurement, self.scoreCal.getSericeInfo())
+                    self.scoreDBhandler.insertFields(gv.gMeasurement, self.scoreCal.getSericeInfo())
                     time.sleep(0.1)     
-                    self.dbhandler.writeServiceInfo('test0_allService', self.scoreCal.getScoreInfo(None))
+                    self.scoreDBhandler.insertFields('test0_allService', self.scoreCal.getScoreInfo(None))
                 except Exception as err:
                     gv.gDebugPrint("Error when update the dataBase: %s" %str(err), logType=gv.LOG_EXCEPT)
-                    self.dbhandler = None
+                    self.scoreDBhandler = None
                 if gv.iClusterGraph:
                     gv.iClusterGraph.updateNodesState(self.scoreCal.getSericeCounts())
             if self.heatMapMgr:
                 self.createRandomHeatMapData()
                 fielddata = self._convertToInfluxField(self.heatMapMgr.getDetailCounts())
-                self.dbhandler.writeServiceInfo('test0_allCounts', fielddata)
+                self.scoreDBhandler.insertFields('test0_allCounts', fielddata)
             time.sleep(self.timeInterval)
 
 #-----------------------------------------------------------------------------

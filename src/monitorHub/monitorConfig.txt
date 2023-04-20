@@ -2,7 +2,7 @@
 # Setup the paramter with below format (every line follow <key>:<val> format, the
 # key can not be changed):
 
-# Score database info
+# Section1: Score database info
 scoreDB_Ip:localhost
 scoreDB_Port:8086
 scoreDB_User:root
@@ -13,6 +13,12 @@ scoreDB_Name:gatewayDB
 Test_Mode:True
 
 # Set plug in cameras
-cam_Flg:False
+cam_Flg:Ture
 cam_Fps:20
 cam_Src:local
+
+# Image displayed in the web
+# logo filename:
+logo:ncl_logo.png
+# Carsel displayed files list, json file under static/img/news
+news_Json:newsPic.json
