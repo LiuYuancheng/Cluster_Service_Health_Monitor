@@ -23,7 +23,7 @@ from datetime import datetime
 import monitorGlobal as gv
 import Log
 import udpCom
-from databaseHandler import InfluxDB1Cli
+from databaseHandler import Sqlite3Cli, InfluxDB1Cli
 
 from monitorUtils import topologyGraph, heatMapManager
 
@@ -134,7 +134,6 @@ class timeLinePnlMgr(object):
         if len(self.timeLineList) > self.tagLimit: self.timeLineList.pop(0)
 
     def getTimeLineInfo(self):
-        self.timeLineList.reverse()
         return self.timeLineList
 
 #-----------------------------------------------------------------------------
@@ -333,6 +332,8 @@ class DataManager(threading.Thread):
         # set the score database client
         self.scoreDBhandler = InfluxDB1Cli(ipAddr=gv.gScoreDBAddr, dbInfo=gv.gScoreDBInfo)
 
+        self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName)
+
         self.timeInterval = 30
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
@@ -373,67 +374,24 @@ class DataManager(threading.Thread):
         return self.timelineMgr.getTimeLineInfo()
 
     def buildTimeline(self):
-        print("build the timeline")
-        eventJson = {
-            'title' : "Day01: Cyber Exercise Start",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 10:20",
-            'contents': "CIDeX 2022 Cyber Exercise Started.",
-            'htmlStr': r'<p style="color:blue;"> Blue Teams all login.</p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-        eventJson = {
-            'title' : "Day01: Blue team report finish state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 11:30",
-            'htmlStr': r'<p style="color:blue;"> Blue Team01, Blue Team02, Blue Team04 submitted \
-                finished get familar get famili with the environment. Every thing normal.</p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-        eventJson = {
-            'title' : "Day01: Blue team report finish state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 11:55",
-            'htmlStr': r'<p style="color:blue;"> Blue Team03, Blue Team05 submitted \
-                finished get familar get famili with the environment. Every thing normal.</p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-
-        eventJson = {
-            'title' : "Day01: Red team report new state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 13:10",
-            'htmlStr': r'<p style="color:red;"> Warning: Red team start to scan the netwrok. </p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-        eventJson = {
-            'title' : "Day01: Red team report new state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 13:40",
-            'htmlStr': r'<p style="color:red;"> Alert: Red team start to launch ransomware attack on \
-                billing server. </p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-        eventJson = {
-            'title' : "Day01: Blue team-03 report new state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 12:10",
-            'htmlStr': r'<p style="color:blue;"> Blue team-03 report network and billing server connection exception.</p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
-
-        eventJson = {
-            'title' : "Day01: Blue team-04, team-01 report new state",
-            'tagSide': 'right',
-            'timeStr': "2022/11/15 12:10",
-            'htmlStr': r'<p style="color:blue;"> Blue team-04, team-01 report network and billing server connection exception.</p>'
-        }
-        self.timelineMgr.buildTimeLineTag(eventJson)
+        querStr = 'SELECT * FROM %s ORDER BY updateT DESC LIMIT 10' %str(gv.gRaw_TimelineTB)
+        self.rawDBhandler.executeQuery(querStr)
+        reuslt = self.rawDBhandler.getCursor().fetchall()
+        for item in reuslt:
+            teamType = 0
+            if 'Red' in item[5]: teamType = 1
+            if 'Blue' in item[5]: teamType = 2
+            eventJson = {
+                'title' : "Day%02d:%s" %(item[3], str(item[1])),
+                'tagSide': 'right',
+                'timeStr': item[2],
+                'evtType': item[4],
+                'team':item[5],
+                'teamType': teamType,
+                'contents': item[6],
+                'htmlStr': None
+            }
+            self.timelineMgr.buildTimeLineTag(eventJson)
 
 #-----------------------------------------------------------------------------
     def addTargetConnector(self, ipaddress, port):

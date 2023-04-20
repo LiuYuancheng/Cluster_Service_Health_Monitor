@@ -35,6 +35,31 @@ body {
   font-family: Helvetica, sans-serif;
 }
 
+/* buttons */
+.btn {
+  border: none;
+  color: white;
+  padding: 7px 14px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.success {background-color: #04AA6D;} /* Green */
+.success:hover {background-color: #46a049;}
+
+.info {background-color: #2196F3;} /* Blue */
+.info:hover {background: #0b7dda;}
+
+.warning {background-color: #ff9800;} /* Orange */
+.warning:hover {background: #e68a00;}
+
+.danger {background-color: #f44336;} /* Red */ 
+.danger:hover {background: #da190b;}
+
+.default {background-color: #e7e7e7; color: black;} /* Gray */ 
+.default:hover {background: #ddd;}
+
+
 /* The actual timeline (the vertical ruler) */
 .timeline {
   position: relative;
@@ -124,7 +149,7 @@ body {
   padding: 10px 15px;
   background-color: white;
   position: relative;
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 /* Media queries - Responsive timeline on screens less than 600px wide */
@@ -158,6 +183,7 @@ body {
   .right {
   left: 0%;
   }
+
 }
 </style>
 </head>
@@ -167,11 +193,25 @@ body {
     {% for timeTag in posts %}
       <div class="container {{timeTag['tagSide']}}">
           <div class="content">
-              <h4> [{{ timeTag['timeStr']}}] {{ timeTag['title'] }} </h4>
-              
-              {% if timeTag['contents'] %} 
-                  <p> {{ timeTag['contents'] }} </p>
+              {% if timeTag['evtType'] == 'announce'%}
+                <button class="btn success"> Announcement </button> <b> {{ timeTag['timeStr']}} </b>
+              {% elif timeTag['evtType'] == 'warning' %}
+                <button class="btn warning"> Warning </button> <b> {{ timeTag['timeStr']}} </b>
+              {% elif timeTag['evtType'] == 'alert' %}
+                <button class="btn danger"> Caustion </button> <b> {{ timeTag['timeStr']}} </b>
+              {% else %}
+                <button class="btn info"> Report </button> <b> {{ timeTag['timeStr']}} </b>
               {% endif %}
+              
+              <p> <b> {{ timeTag['title'] }} </b> </p>
+              
+              {% if timeTag['teamType'] == 0 %}
+                <p> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
+              {% elif timeTag['teamType'] == 1 %}
+                <p style="color:red;"> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
+              {% else %}
+                <p style="color:blue;"> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
+                {% endif %}
 
               {% if timeTag['htmlStr'] %} 
                   {{ timeTag['htmlStr'] | safe }} 

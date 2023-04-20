@@ -55,11 +55,12 @@ class dbHandler(object):
 #-----------------------------------------------------------------------------
 class Sqlite3Cli(dbHandler):
 
-    def __init__(self, dbPath, databaseName=None) -> None:
+    def __init__(self, dbPath, databaseName=None, rowFac=None) -> None:
         if not os.path.exists(dbPath):
             print("Error: sqlite3DB file %s not exist, exit() called" %str(dbPath))
             exit()
         self.dbPath = dbPath
+        self.rowFactor = rowFac
         self.dbConn = None  # data base 
         self.dbCursor = None
         super().__init__(databaseName)
@@ -67,7 +68,7 @@ class Sqlite3Cli(dbHandler):
     def _initConn(self):
         try:
             self.dbConn = sqlite3.connect(self.dbPath)
-            self.dbConn.row_factory = sqlite3.Row
+            if self.rowFactor: self.dbConn.row_factory = self.rowFactor
             self.dbCursor = self.dbConn.cursor()
             return True
         except Exception as err:
@@ -82,6 +83,9 @@ class Sqlite3Cli(dbHandler):
         self.executeQuery(queryStr)
         result = self.dbCursor.fetchall()
         return result
+
+    def getCursor(self):
+        if self.dbConnected and self.dbCursor: return self.dbCursor
 
     def executeQuery(self, queryStr, paramList=None):
         if paramList and isinstance(paramList, tuple):

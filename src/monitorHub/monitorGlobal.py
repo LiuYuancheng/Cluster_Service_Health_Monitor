@@ -79,6 +79,8 @@ def gDebugPrint(msg, prt=True, logType=None):
         Log.info(msg)
 
 # Set raw database parameters
+gRawDBName = "Raw_DataBas"
+gRaw_TimelineTB = "evtTimeline"
 
 # Set score database parameters
 gScoreDBAddr = (CONFIG_DICT['scoreDB_Ip'], int(CONFIG_DICT['scoreDB_Port']))
