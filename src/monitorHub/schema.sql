@@ -7,5 +7,6 @@ CREATE TABLE evtTimeline (
     dayNum INTEGER,
     evtType TEXT,
     teamName TEXT,
+    teamType INTEGER,
     evtState TEXT
 );

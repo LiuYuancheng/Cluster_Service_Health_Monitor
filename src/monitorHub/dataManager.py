@@ -115,40 +115,6 @@ class clusterGraph(topologyGraph):
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
-class InfluxCli(object):
-    """ Client to connect to the influx db and insert data."""
-    def __init__(self, ipAddr=None, dbInfo=None):
-        """ Init the influx DB client to login to the data base. dbInfo: name, 
-            password, databaseName. init example: 
-            client = InfluxCli(ipAddr=('127.0.0.1', 8086), dbinfo=('root', 'root', 'gatewayDB'))
-        """
-        (ip, port) = ipAddr if ipAddr else ('localhost', 8086)
-        (user, pwd, dbName) = dbInfo if dbInfo and len(
-            dbInfo) == 3 else ('root', 'root', 'gatewayDB')
-        #self.dbClient = InfluxDBClient('localhost', 8086, 'root', 'root', 'quantumGWDB')
-        # link to data base:
-        try:
-            self.dbClient = InfluxDBClient(ip, port, user, pwd, dbName)
-        except Exception as e:
-            gv.gDebugPrint("Can not connect to the data base, please check whether the influxDB service is running. \n" 
-                + "- Windows:   go to D:\\Tools\\InfluxDB\\influxdb-1.8.1-1 and run influxd.exe \n"
-                + "- Ubuntu:    sudo systemctl start influxdb", logType=gv.LOG_ERR )
-            exit()
-        # state the UDP server:
-        gv.gDebugPrint("InfluxDB client inited", logType=gv.LOG_INFO)
-
-    #-----------------------------------------------------------------------------
-    def writeServiceInfo(self, serviceName, fieldDict):
-        """ Write the score data to the related gateway table."""
-        dataJoson = [
-            {   "measurement": str(serviceName),
-                "tags": { "Name": "time",},
-                "fields": fieldDict
-            }]
-        self.dbClient.write_points(dataJoson)
-
-#-----------------------------------------------------------------------------
-#-----------------------------------------------------------------------------
 class scoreCalculator(object):
     """ A Customized score calculator. """
     def __init__(self) -> None:
@@ -300,7 +266,7 @@ class DataManager(threading.Thread):
         handle the data-IO with dataBase and the monitor hub's data fetching/
         changing request.
     """
-    def __init__(self, parent, fetchMode=True) -> None:
+    def __init__(self, parent, fetchMode=True, timeInterval=30) -> None:
         threading.Thread.__init__(self)
         self.parent = parent
         self.fetchMode = fetchMode
@@ -308,10 +274,10 @@ class DataManager(threading.Thread):
         self.rawDataDict = dict()   # The dictionary used to save the raw data.
         # set the score database client
         self.scoreDBhandler = InfluxDB1Cli(ipAddr=gv.gScoreDBAddr, dbInfo=gv.gScoreDBInfo)
+        # set the raw database client
+        self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName, threadSafe=False )
 
-        self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName)
-
-        self.timeInterval = 30
+        self.timeInterval = timeInterval
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
         
@@ -352,17 +318,14 @@ class DataManager(threading.Thread):
         reuslt = self.rawDBhandler.getCursor().fetchall()
         timelintList = []
         for item in reuslt:
-            teamType = 0
-            if 'Red' in item[5]: teamType = 1
-            if 'Blue' in item[5]: teamType = 2
             eventJson = {
                 'title' : "Day%02d:%s" %(item[3], str(item[1])),
                 'tagSide': 'right',
                 'timeStr': item[2],
                 'evtType': item[4],
                 'team':item[5],
-                'teamType': teamType,
-                'contents': item[6],
+                'teamType': item[6],
+                'contents': item[7],
                 'htmlStr': None
             }
             timelintList.append(eventJson)

@@ -10,7 +10,7 @@
 # Author:      Yuancheng Liu
 #
 # Created:     2023/03/19
-# Version:     v_0.1
+# Version:     v_0.1.1
 # Copyright:   
 # License:     
 #-----------------------------------------------------------------------------
@@ -24,6 +24,7 @@ from influxdb import InfluxDBClient
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class dbHandler(object):
+    """ Root class of the database clients. """
     def __init__(self, databaseName=None) -> None:
         self.dbConnected = False
         self._testConnect()
@@ -33,8 +34,7 @@ class dbHandler(object):
             print("Database [%s] handler init fail: DB connection error." %str(databaseName))
 
     def _testConnect(self):
-        if self.getTableList():
-            self.dbConnected = True
+        if self.getTableList(): self.dbConnected = True
 
     def createTable(self, tableName):
         return None 
@@ -54,59 +54,87 @@ class dbHandler(object):
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class Sqlite3Cli(dbHandler):
-
-    def __init__(self, dbPath, databaseName=None, rowFac=None) -> None:
+    """ Client to connect to Sqlite3 database."""
+    def __init__(self, dbPath, databaseName=None, threadSafe=True, rowFac=None) -> None:
+        """ Init the client. Init example:
+            dbhandler = Sqlite3Cli('database.db', databaseName ='testdb',threadSafe=False, rowFac=sqlite3.Row )
+        Args:
+            dbPath (_type_): sqlite3 database path.
+            databaseName (_type_, optional): Name of the DB. Defaults to None.
+            threadSafe (bool, optional): flag to check_same_thread, if you want the client
+                be used in different thread, set the val to False. Defaults to True.
+            rowFac (_type_, optional): select row fector. Defaults to None.
+        """
         if not os.path.exists(dbPath):
-            print("Error: sqlite3DB file %s not exist, exit() called" %str(dbPath))
+            print("Error: sqlite3DB file %s not exist, exit() called..." %str(dbPath))
             exit()
         self.dbPath = dbPath
         self.rowFactor = rowFac
-        self.dbConn = None  # data base 
+        self.threadSafe = threadSafe
+        self.dbConn = None  # data base connector
         self.dbCursor = None
         super().__init__(databaseName)
 
+    #-----------------------------------------------------------------------------
     def _initConn(self):
         try:
-            self.dbConn = sqlite3.connect(self.dbPath, check_same_thread=False)
+            self.dbConn = sqlite3.connect(self.dbPath, check_same_thread=self.threadSafe)
             if self.rowFactor: self.dbConn.row_factory = self.rowFactor
             self.dbCursor = self.dbConn.cursor()
             return True
         except Exception as err:
             print("Error to connect to dataabse: %s" %str(err))
             return False
-        
+    
+    def reInitConn(self):
+        if self.dbConn: self.close()
+        self._initConn()
+
+    #-----------------------------------------------------------------------------
     def _testConnect(self):
         self.dbConnected = self._initConn()
 
+    #-----------------------------------------------------------------------------
     def getTableList(self):
         queryStr = """SELECT name FROM sqlite_master WHERE type='table';"""
         self.executeQuery(queryStr)
         result = self.dbCursor.fetchall()
         return result
 
+    #-----------------------------------------------------------------------------
     def getCursor(self):
         if self.dbConnected and self.dbCursor: return self.dbCursor
+        return None
 
+    #-----------------------------------------------------------------------------
     def executeQuery(self, queryStr, paramList=None):
+        """ 
+        Args:
+            queryStr (str): query string
+            paramList (tuple, optional): paramter tuple. Defaults to None.
+        """
         if paramList and isinstance(paramList, tuple):
             self.dbCursor.execute(queryStr, paramList)
         else:
             self.dbCursor.execute(queryStr)
         self.dbConn.commit()
 
+    #-----------------------------------------------------------------------------
     def executeScript(self, scriptPath):
         with open(scriptPath) as fh:
             self.dbConn.executescript(fh.read())
         self.dbConn.commit()
 
+    #-----------------------------------------------------------------------------
     def close(self):
         self.dbConn.close()
+        self.dbConn = None
         return super().close()
         
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 class InfluxDB1Cli(dbHandler):
-    """ Client to connect to the influxDB1.X and insert data to single DB."""
+    """ Client to connect to the influxDB1.8X and insert data to single DB."""
 
     def __init__(self, ipAddr=None, dbInfo=None) -> None:
         """ Init the influxDB1.X client to login to the data base. dbInfo: name, 

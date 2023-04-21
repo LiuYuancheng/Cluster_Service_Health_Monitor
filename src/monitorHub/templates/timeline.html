@@ -231,9 +231,11 @@ body {
                 <p> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
               {% elif timeTag['teamType'] == 1 %}
                 <p style="color:red;"> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
+              {% elif timeTag['teamType'] == 2 %}
+                <p style="color:green;"> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
               {% else %}
                 <p style="color:blue;"> <b> [ {{ timeTag['team'] }} ] </b> {{ timeTag['contents'] }} </p>
-                {% endif %}
+              {% endif %}
 
               {% if timeTag['htmlStr'] %} 
                   {{ timeTag['htmlStr'] | safe }} 

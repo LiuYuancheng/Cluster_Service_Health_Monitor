@@ -14,17 +14,16 @@
 import os
 import json
 import time
-import sqlite3
 from random import randint
-from datetime import datetime, timedelta
 from monitorGlobal import DB_PATH, SQL_PATH, dirpath, gRaw_TimelineTB
 from databaseHandler import Sqlite3Cli
 
 connection = Sqlite3Cli(DB_PATH, databaseName = "Raw_DataBase")
 
 def testCase(mode):
-
+    print('Mode: %s' %str(mode))
     if mode == 0:
+        print("Reset DB and test insert data")
         connection.executeScript(SQL_PATH)
     elif mode == 1:
         print("Reset DB and test insert data")
@@ -38,9 +37,10 @@ def testCase(mode):
                 dayNum = int(item['dayNum'])
                 evtType = item['evtType']
                 teamName = item['teamName']
+                teamType = item['teamType']
                 evtState = item['evtState']
-                querStr = 'INSERT INTO %s (evtTitle, dayNum, evtType, teamName, evtState) VALUES (?, ?, ?, ?, ?)' %str(gRaw_TimelineTB)
-                paramters = (evtTitle, dayNum, evtType, teamName, evtState)
+                querStr = 'INSERT INTO %s (evtTitle, dayNum, evtType, teamName, teamType, evtState) VALUES (?, ?, ?, ?, ?, ?)' %str(gRaw_TimelineTB)
+                paramters = (evtTitle, dayNum, evtType, teamName, teamType, evtState)
                 connection.executeQuery(querStr, paramList=paramters)
                 time.sleep(randint(5, 10))
     elif mode == 2:
@@ -54,5 +54,5 @@ def testCase(mode):
     connection.close()
 
 if __name__ == '__main__':
-    mode = 2
+    mode = 1
     testCase(mode)

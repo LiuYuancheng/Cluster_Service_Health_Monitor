@@ -1,65 +1,74 @@
 [
     {
-        "evtTitle" : "Cyber Exercise Start",
+        "evtTitle": "Cyber Exercise Start",
         "dayNum": 0,
         "evtType": "announce",
         "teamName": "BlackTeam",
+        "teamType": 0,
         "evtState": "CIDeX 2022 Cyber Exercise Started.Blue Teams all login."
     },
-
     {
-        "evtTitle" : "Blue team report finish state",
+        "evtTitle": "Green Team report exercise evn all service online.",
+        "dayNum": 0,
+        "evtType": "report",
+        "teamName": "GreenTeam",
+        "teamType": 2,
+        "evtState": "Green Team report all the main service online. "
+    },
+    {
+        "evtTitle": "Blue team report finish state",
         "dayNum": 1,
         "evtType": "report",
         "teamName": "BlueTeam",
+        "teamType": 3,
         "evtState": "Blue Team01, Blue Team02, Blue Team04 submitted state: Finished getting familar with execise environment. Every thing normal. "
     },
-
     {
-        "evtTitle" : "Blue team report finish state",
+        "evtTitle": "Blue team report finish state",
         "dayNum": 1,
         "evtType": "report",
         "teamName": "BlueTeam",
+        "teamType": 3,
         "evtState": "Blue Team03, Team04 submitted state: Finished getting familar with execise environment. Every thing normal. "
     },
-
     {
-        "evtTitle" : "Red team report new state",
+        "evtTitle": "Red team report new state",
         "dayNum": 1,
         "evtType": "warning",
         "teamName": "RedTeam01",
+        "teamType": 1,
         "evtState": "Warning: Red team start to scan the netwrok."
     },
-
     {
-        "evtTitle" : "Blue team-03 report new state",
+        "evtTitle": "Blue team-03 report new state",
         "dayNum": 1,
         "evtType": "report",
         "teamName": "BlueTeam03",
+        "teamType": 3,
         "evtState": "Blue team-03 report network delay."
     },
-
     {
-        "evtTitle" : "Red team report new state",
+        "evtTitle": "Red team report new state",
         "dayNum": 1,
         "evtType": "alert",
         "teamName": "RedTeam01",
+        "teamType": 1,
         "evtState": "Alert: Red team start to launch ransomware attack on."
     },
-
     {
-        "evtTitle" : "Blue team-05 report new state",
+        "evtTitle": "Blue team-05 report new state",
         "dayNum": 1,
         "evtType": "report",
         "teamName": "BlueTeam05",
+        "teamType": 3,
         "evtState": "Blue team-05 report billing service connection exception."
     },
-
     {
-        "evtTitle" : "Blue team-01 report new state",
+        "evtTitle": "Blue team-01 report new state",
         "dayNum": 1,
         "evtType": "report",
         "teamName": "BlueTeam01",
+        "teamType": 3,
         "evtState": "Blue team-01 report network file system connection error."
     }
 ]
