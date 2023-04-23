@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # Name:        monitorUtils.py
 #
-# Purpose:     The utility functions used in the monitor hub.
+# Purpose:     This module will provide the utility functions used in the monitor hub.
 #              
 # Author:      Yuancheng Liu
 #
@@ -35,8 +35,8 @@ class camClient(object):
         self.camera = cv2.VideoCapture(videoSrc)
         self.fpsNum = fps
         
-    def genFrames(self):
-        """ generate frame by frame from camera
+    def getFrames(self):
+        """ Get frame one by one from camera based on the fps rate.
             Returns:
                 _type_: Use yield to return byte video frame stream. None if video source 
                         is not avaliable.

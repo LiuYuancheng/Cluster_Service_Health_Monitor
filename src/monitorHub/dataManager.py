@@ -270,6 +270,7 @@ class DataManager(threading.Thread):
         threading.Thread.__init__(self)
         self.parent = parent
         self.fetchMode = fetchMode
+        self.timeInterval = timeInterval
         self.connectorsDict = dict() if self.fetchMode else None
         self.rawDataDict = dict()   # The dictionary used to save the raw data.
         # set the score database client
@@ -277,7 +278,6 @@ class DataManager(threading.Thread):
         # set the raw database client
         self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName, threadSafe=False )
 
-        self.timeInterval = timeInterval
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
         
@@ -310,9 +310,6 @@ class DataManager(threading.Thread):
 
 #-----------------------------------------------------------------------------
     def getTimelineJson(self):
-        return self.buildTimeline()
-
-    def buildTimeline(self):
         querStr = 'SELECT * FROM %s ORDER BY updateT DESC LIMIT 10' %str(gv.gRaw_TimelineTB)
         self.rawDBhandler.executeQuery(querStr)
         reuslt = self.rawDBhandler.getCursor().fetchall()

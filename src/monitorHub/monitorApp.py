@@ -96,7 +96,7 @@ def show_timeline():
 def video_feed():
     if gv.iCamMgr:
         #Video streaming route. Put this in the src attribute of an img tag
-        return Response(gv.iCamMgr.genFrames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+        return Response(gv.iCamMgr.getFrames(), mimetype='multipart/x-mixed-replace; boundary=frame')
     else:
         return Response(None, mimetype='multipart/x-mixed-replace; boundary=frame')
 
