@@ -27,7 +27,6 @@ from databaseHandler import Sqlite3Cli, InfluxDB1Cli
 
 from monitorUtils import topologyGraph, heatMapManager
 
-
 # Define all the module local untility functions here:
 #-----------------------------------------------------------------------------
 def parseIncomeMsg(msg):

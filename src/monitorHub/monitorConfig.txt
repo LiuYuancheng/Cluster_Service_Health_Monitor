@@ -2,15 +2,27 @@
 # Setup the paramter with below format (every line follow <key>:<val> format, the
 # key can not be changed):
 
-# Section1: Score database info
+# Config section 00: Basic general config.
+# > Test mode flag
+Test_Mode:True
+Flask_Port:5000
+
+# Config section 01: Score database (influxDB1.8.1) info.
+# > Define the influxDB connection detail
 scoreDB_Ip:localhost
 scoreDB_Port:8086
 scoreDB_User:root
 scoreDB_Pwd:root
 scoreDB_Name:gatewayDB
 
-# Test mode flag
-Test_Mode:True
+# > Define the influxDB data storage measurement. 
+scoreMT_Score:test0_allService
+scoreMT_Count:test0_allCounts
+scoreMT_Team:as06_services
+
+
+
+
 
 # Set plug in cameras
 cam_Flg:Ture
@@ -20,5 +32,5 @@ cam_Src:local
 # Image displayed in the web
 # logo filename:
 logo:ncl_logo.png
-# Carsel displayed files list, json file under static/img/news
+# Carousel displayed files list json file name (under flask folder "static/img/news")
 news_Json:newsPic.json

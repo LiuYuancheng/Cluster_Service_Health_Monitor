@@ -79,7 +79,7 @@ def gDebugPrint(msg, prt=True, logType=None):
         Log.info(msg)
 
 # Set raw database parameters
-gRawDBName = "Raw_DataBas"
+gRawDBName = "Raw_DataBase"
 gRaw_TimelineTB = "evtTimeline"
 
 # Set score database parameters
