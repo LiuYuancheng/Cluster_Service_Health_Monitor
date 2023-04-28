@@ -63,7 +63,10 @@ def show_logo():
     logoPath = os.path.join(app.config['UPLOAD_FOLDER'], gv.CONFIG_DICT['logo'])
     return render_template("logo.html", logo_image = logoPath)
 
-# Ajax panel request handling
+@app.route('/information')
+def render_timeline():
+    return render_template('infopanel.html')
+
 @app.route('/heatmap')
 def show_heatmap():
     heatmapJson = {

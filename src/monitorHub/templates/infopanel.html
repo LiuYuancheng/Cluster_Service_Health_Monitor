@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>event timeline</title>
+    <meta charset="utf-8">
+    <meta name="description" content="TimelineJS Embed">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <!-- CSS-->
+    <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+    <!--FONT-->
+
+    <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+    <!-- Style-->
+    <style>
+      html, body {
+      	height:100%;
+      	width:100%;
+      	padding: 0px;
+      	margin: 0px;
+      }
+      .tl-timeline {
+      }
+      
+    </style>
+    <!-- HTML5 shim, for IE6-8 support of HTML elements-->
+    <!--if lt IE 9
+    script(src='https://html5shim.googlecode.com/svn/trunk/html5.js')
+    
+    -->
+  </head>
+  <body>
+    <div id="tl-timeline"></div>
+    <!-- JavaScript-->
+    
+    <script>
+	 var options = {
+		hash_bookmark: true,
+		scale_factor: 1,
+    font: "default",
+		//ga_property_id: null,
+		//is_full_embed: true,
+    default_bg_color: {r:200, g:200, b:200},
+		timenav_position: "bottom",
+		language: "en"
+	  }
+      var timeline = new TL.Timeline('tl-timeline', '{{ url_for('static', filename='data/events.json') }}', options);
+      window.onresize = function(event) {
+      	timeline.updateDisplay();
+      }
+    </script>
+  </body>
+</html>

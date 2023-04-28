@@ -21,11 +21,8 @@ scoreMT_Count:test0_allCounts
 scoreMT_Team:as06_services
 
 
-
-
-
 # Set plug in cameras
-cam_Flg:Ture
+cam_Flg:False
 cam_Fps:20
 cam_Src:local
 

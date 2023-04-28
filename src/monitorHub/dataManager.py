@@ -275,7 +275,7 @@ class DataManager(threading.Thread):
         # set the score database client
         self.scoreDBhandler = InfluxDB1Cli(ipAddr=gv.gScoreDBAddr, dbInfo=gv.gScoreDBInfo)
         # set the raw database client
-        self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName, threadSafe=False )
+        self.rawDBhandler = Sqlite3Cli(gv.DB_PATH, databaseName = gv.gRawDBName, threadSafe=False)
 
         # the percentage will be shown on dashboard.
         self.scoreCal = scoreCalculator()
