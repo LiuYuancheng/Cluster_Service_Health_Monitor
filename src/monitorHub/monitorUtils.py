@@ -223,11 +223,11 @@ eventJson = {
             "headline": " CIDeX 2022",
             "text": " <b> The inaugural Critical Infrastructure Defence Exercise (CIDeX) 2022 \
                     is the largest OT hands-on-keyboard Critical Infrastructure defence exercise. \
-                    It provides a platform for Singapore’s cyber defenders to train together the \
+                    It provides a platform for Singapore's cyber defenders to train together the \
                     defence of Critical Information Infrastructure (CII). </b> <br>\
-                    With a better insight into how the CII – comprising IT and OT networks – \
+                    With a better insight into how the CII - comprising IT and OT networks - \
                     can suffer from cyberattacks and their adverse consequences, the blue teams \
-                    can distil these lessons and tailor them to augment their respective organisations’ \
+                    can distil these lessons and tailor them to augment their respective organisations' \
                     cyber defence and protection strategies.<br><br>\
                     Relaite link: https://itrust.sutd.edu.sg/cidex-2022/"
         },
@@ -301,7 +301,7 @@ eventJson = {
             },
             "text": {
                 "headline": "Day0 : Cyber Exercise Start ",
-                "text": "A comprehensive 3-day pre-exercise training programme will be conducted in SAF’s Cyber Test and Evaluation Centre (CyTEC), so as to equip the blue teams with the capability and confidence to navigate through the CII platform and utilize appropriate cyber tools to monitor the platform and respond to the cyber attacks."
+                "text": "A comprehensive 3-day pre-exercise training programme will be conducted in SAF's Cyber Test and Evaluation Centre (CyTEC), so as to equip the blue teams with the capability and confidence to navigate through the CII platform and utilize appropriate cyber tools to monitor the platform and respond to the cyber attacks."
             },
             "background": {
 				"opacity": "60",
@@ -323,7 +323,7 @@ eventJson = {
                 "headline": "Day1 : National agencies defend simulated attack",
                 "text": "<b> Attack on water and power plants in cyber drill </b><br><br>\
                     A comprehensive 3-day pre-exercise training programme \
-                    CIDeX 2022’s platform has three OT testbeds contributed by iTrust — the Secure Water Treatment (SWaT), Water Distribution (WaDi) and Electric Power and Intelligent Control (EPIC) OT testbeds, integrated with an Enterprise IT network of VMs hosted within NCL."
+                    CIDeX 2022's platform has three OT testbeds contributed by iTrust — the Secure Water Treatment (SWaT), Water Distribution (WaDi) and Electric Power and Intelligent Control (EPIC) OT testbeds, integrated with an Enterprise IT network of VMs hosted within NCL."
             },
             "background": {
 				"opacity": "60",
@@ -345,8 +345,8 @@ eventJson = {
                 "text": "<b> Preventing Power Supply Outages and water cuts</b><br><br>\
                     > Blue Team, comprising participants from the national agencies, played\
                     the role of cyber defenders. The Blue Team defended the digital infrastructure, \
-                    which include an enterprise IT network and three OT testbeds – replicating a water \
-                    treatment plant, a water distribution plant and a power grid system – against live simulated \
+                    which include an enterprise IT network and three OT testbeds - replicating a water \
+                    treatment plant, a water distribution plant and a power grid system - against live simulated \
                     cyber-attacks launched by a composite Red Team made up of DIS and CSA personnel.<br><br>\
                     <b>DIS and CSA sign Joint Operations Agreement (JOA)</b><br><br>\
                     > The CSA-DIS JOA establishes a framework for cooperation and collaboration in the areas of \

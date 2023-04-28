@@ -63,6 +63,11 @@ def show_logo():
     logoPath = os.path.join(app.config['UPLOAD_FOLDER'], gv.CONFIG_DICT['logo'])
     return render_template("logo.html", logo_image = logoPath)
 
+@app.route('/poster')
+def show_poster():
+    logoPath = os.path.join(app.config['UPLOAD_FOLDER'], 'poster.png')
+    return render_template("poster.html", poster_image = logoPath)
+
 @app.route('/information')
 def render_timeline():
     data = eventJson
