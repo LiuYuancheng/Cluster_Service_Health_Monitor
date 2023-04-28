@@ -18,7 +18,7 @@ import json
 from flask import Flask, Response, request, render_template, jsonify
 import monitorGlobal as gv
 import dataManager
-from monitorUtils import camClient, newsCarouselMgr
+from monitorUtils import camClient, newsCarouselMgr, eventJson
 
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
@@ -65,7 +65,8 @@ def show_logo():
 
 @app.route('/information')
 def render_timeline():
-    return render_template('infopanel.html')
+    data = eventJson
+    return render_template('infopanel.html', posts=data)
 
 @app.route('/heatmap')
 def show_heatmap():

@@ -213,3 +213,148 @@ class heatMapManager(object):
                 offlineCount += states.count(3)
             resultJson[key] = [onlineCount, warningCount, offlineCount]
         return resultJson
+
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+eventJson = {
+    "title": {
+        "text": {
+            "headline": " CIDeX 2022",
+            "text": " <b> The inaugural Critical Infrastructure Defence Exercise (CIDeX) 2022 \
+                    is the largest OT hands-on-keyboard Critical Infrastructure defence exercise. \
+                    It provides a platform for Singapore’s cyber defenders to train together the \
+                    defence of Critical Information Infrastructure (CII). </b> <br>\
+                    With a better insight into how the CII – comprising IT and OT networks – \
+                    can suffer from cyberattacks and their adverse consequences, the blue teams \
+                    can distil these lessons and tailor them to augment their respective organisations’ \
+                    cyber defence and protection strategies.<br><br>\
+                    Relaite link: https://itrust.sutd.edu.sg/cidex-2022/"
+        },
+        "media": {
+            "url": "static/img/news/news_cidex.jpg"
+        },
+
+    },
+    "events": [
+        {
+            "start_date": {
+                "year":	"2022",
+				"month":"11",
+                "day": "6"
+            },
+            "end_date": {
+                "year": "2022",
+				"month":"11",
+                "day": "10"
+            },
+            "media": {
+                "url": "https://www.google.com/maps/place/COM3/@1.2930687,103.7708788,16.5z/data=!4m14!1m7!3m6!1s0x31da1b7c11a9a70d:0x21b81bbe73813191!2sCOM3!8m2!3d1.294872!4d103.7745683!16s%2Fg%2F11rnd20sk8!3m5!1s0x31da1b7c11a9a70d:0x21b81bbe73813191!8m2!3d1.294872!4d103.7745683!16s%2Fg%2F11rnd20sk8"
+            },
+            "text": {
+                "headline": "Cyber Execise Setup",
+                "text": "\
+                    <h4> Event location: </h4> <br>\
+                    <b>NUS School of Computing (COM 3) </b><br>\
+                    Address: 11 Research Link, Singapore 119391 <br><br>\
+                    Over 50 cyber defenders from 17 organisations representing five critical \
+                    sectors — power, water, telecommunication, land transport and maritime — will \
+                    form five combined blue teams to monitor and defend the CII systems over two days. \
+                    A composite red team will launch a series of live simulated cyber attacks on these \
+                    systems over two days, while the five blue teams will work in concert to detect and \
+                    respond against the attacks."
+            },
+            "background": {
+				"opacity": "60",
+                "url": "static/img/information/venue_bg.png"
+            }
+        },
+
+        {   "start_date": {
+                "year":	"2022",
+				"month":"11",
+                "day": "12"
+            },
+            "media": {
+                "url": "static/img/information/prerunImg.png"
+            },
+            "text": {
+                "headline": "Execise Pre-Run",
+                "text": "\
+                    <h4> Familiarisation & Training </h4> <br>\
+                    A comprehensive familiarisation and training session will be organised in Oct 2022 to equip the CII blue teams with the capability and confidence to navigate through the CI platform and utilise tools to monitor the platform and respond to cyber attacks. More details will follow."
+            },
+            "background": {
+				"opacity": "60",
+                "url": "static/img/information/prerunBg.png"
+            }
+        },
+
+        {   
+            "start_date": {
+                "year":	"2022",
+				"month":"11",
+                "day": "14"
+            },
+            "media": {
+                "url": "static/img/information/day0img.png"
+            },
+            "text": {
+                "headline": "Day0 : Cyber Exercise Start ",
+                "text": "A comprehensive 3-day pre-exercise training programme will be conducted in SAF’s Cyber Test and Evaluation Centre (CyTEC), so as to equip the blue teams with the capability and confidence to navigate through the CII platform and utilize appropriate cyber tools to monitor the platform and respond to the cyber attacks."
+            },
+            "background": {
+				"opacity": "60",
+                "url": "static/img/information/prerunBg.png"
+            }
+
+        },
+
+        {   
+            "start_date": {
+                "year":	"2022",
+				"month":"11",
+                "day": "15"
+            },
+            "media": {
+                "url": "static/img/news/new_time.jpg"
+            },
+            "text": {
+                "headline": "Day1 : National agencies defend simulated attack",
+                "text": "<b> Attack on water and power plants in cyber drill </b><br><br>\
+                    A comprehensive 3-day pre-exercise training programme \
+                    CIDeX 2022’s platform has three OT testbeds contributed by iTrust — the Secure Water Treatment (SWaT), Water Distribution (WaDi) and Electric Power and Intelligent Control (EPIC) OT testbeds, integrated with an Enterprise IT network of VMs hosted within NCL."
+            },
+            "background": {
+				"opacity": "60",
+                "url": "static/img/news/news_cidex.jpg"
+            }
+        },
+
+        {   
+            "start_date": {
+                "year":	"2022",
+				"month":"11",
+                "day": "16"
+            },
+            "media": {
+                "url": "https://www.youtube.com/watch?v=1ErztYQRJe0"
+            },
+            "text": {
+                "headline": "Day2 : VVIP session",
+                "text": "<b> Preventing Power Supply Outages and water cuts</b><br><br>\
+                    > Blue Team, comprising participants from the national agencies, played\
+                    the role of cyber defenders. The Blue Team defended the digital infrastructure, \
+                    which include an enterprise IT network and three OT testbeds – replicating a water \
+                    treatment plant, a water distribution plant and a power grid system – against live simulated \
+                    cyber-attacks launched by a composite Red Team made up of DIS and CSA personnel.<br><br>\
+                    <b>DIS and CSA sign Joint Operations Agreement (JOA)</b><br><br>\
+                    > The CSA-DIS JOA establishes a framework for cooperation and collaboration in the areas of \
+                    joint operations and capability development that will contribute towards a secure national cyberspace.<br><br>\
+                    Relaite link: https://www.comp.nus.edu.sg/news/2022-inaugural-cidex-2022/\
+                    "
+            }
+        },
+
+    ]
+}
