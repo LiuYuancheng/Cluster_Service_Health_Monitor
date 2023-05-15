@@ -22,7 +22,7 @@ scoreMT_Team:as06_services
 
 
 # Set plug in cameras
-cam_Flg:False
+cam_Flg:True
 cam_Fps:20
 cam_Src:local
 
