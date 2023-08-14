@@ -37,9 +37,13 @@ The Cluster Service Heath Monitor is a system's function/service monitoring prog
 
 ##### State monitor and score dashboard
 
-![](doc/img/dashboard_00.png)
+![](doc/img/Slide3.PNG)
 
+![](doc/img/Slide4.PNG)
 
+![](doc/img/Slide5.PNG)
+
+![](doc/img/Slide5.PNG)
 
 `version: v0.1` 
 
@@ -144,7 +148,7 @@ The detail system workflow is shown as below diagram:
 
 The monitor dashboard: 
 
-![](doc/img/useCase_01.png)
+![](doc/img/dashboard_00.png)
 
 ![](doc/img/useCase_02.png)
 

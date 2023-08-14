@@ -24,7 +24,12 @@ class monitorRun(object):
 
     def __init__(self) -> None:
         self.clientIPList = [
-            ('127.0.0.1', 3001)
+            ('127.0.0.1', 3001),
+            ('192.168.35.101', 3001),
+            ('192.168.35.102', 3001),
+            ('192.168.35.103', 3001),
+            ('192.168.35.104', 3001),
+
         ]
         self.commMgr = commManager.commManager()
         self.commMgr.initUDPClient('127.0.0.1', 3001)
