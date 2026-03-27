@@ -1,12 +1,29 @@
-# Cluster Service Health Monitor
+# Cyber Exercise Service and Resource Health Monitor
 
-**Program Design Purpose** : We want to create a monitor system which can show customer the services availability of a mid size cluster in real time. The program can check the availability / execution state of each nodes/vms/services/programs in the cluster regularly and provide the health evaluation score based on user's requirement or pre-set calculation function. We aim to avoid the user making much change of their routing config of the switches in the network or installing much additional libs on their nodes during the setup to reduce the complexity of deployment. The system can be applied to monitor the below scenario:
+us English | 
 
-- Monitor the health of the related nodes/services used in a cyber exercise. 
-- Monitor whether some attack is happening or has happened on some critical nodes (such as NTP server)/service program of a cluster. 
-- Visualize the nodes' status changing during a cyber security drill/events. 
+**Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide real-time Visualization software for showcasing the availability, status, and performance of critical resources—including hardware, virtual machines (VMs), containers, applications, and services—throughout the lifecycle of an exercise.
 
-  
+With the function provided by the monitoring system, both the cyber exercise/drill organizers and participants will have a better understand of real-time progress of the exercise, identify potential issues, and respond effectively. This improves situational awareness, enhances coordination across teams, and ensures the smooth execution of complex cyber range scenarios. The main features and function of the system is designed to fulfill the operational needs of multiple teams involved in cyber exercises:
+
+- **Black (Judgment) Team**: Provides a overview of the entire exercise, including team status, scoring, resource availability, and overall defense progress, enabling accurate evaluation and decision-making. 
+- **Green (Setup) Team**: Supports environment setup, testing, and debugging by offering detailed insights into system health and service readiness during preparation and execution phases.
+- **Blue (Defense) Team**: Enables real-time monitoring of the infrastructure and services under defense, helping defenders quickly detect anomalies and assess system conditions.
+- **Red (Attack) Team**: Assists in reporting attack progress and evaluating the effectiveness and impact of offensive actions on the target environment.
+- **Yellow (Operation) Team**: Facilitates the simulation of normal user behavior to enhance realism and provide baseline activity within the exercise environment.
+- **Purple (Record) Team**: Records the full timeline of exercise events and archives logs for post-exercise analysis, learning, and improvement.
+
+Furthermore, the system incorporates automated mechanisms to detect and record attack activities and corresponding defense actions, enabling accurate event tracking and forensic analysis.
+
+```python
+# Author:      Yuancheng Liu
+# Created:     2026/03/20
+# Version:     v_0.0.3
+# Copyright:   Copyright (c) 2026 LiuYuancheng
+# License:     MIT License
+```
+
+**Table of Contents**
 
 [TOC]
 
@@ -14,20 +31,32 @@
 
 ### Introduction
 
+We want to create a monitor system which can show customer the services availability of a mid size cluster in real time. The program can check the availability / execution state of each nodes/vms/services/programs in the cluster regularly and provide the health evaluation score based on user's requirement or pre-set calculation function. We aim to avoid the user making much change of their routing config of the switches in the network or installing much additional libs on their nodes during the setup to reduce the complexity of deployment. The system can be applied to monitor the below scenario:
+
+- Monitor the health of the related nodes/services used in a cyber exercise. 
+- Monitor whether some attack is happening or has happened on some critical nodes (such as NTP server)/service program of a cluster. 
+- Visualize the nodes' status changing during a cyber security drill/events. 
+
+
+
 The Cluster Service Heath Monitor is a system's function/service monitoring program to check and evaluate the cyber security computing cluster's critical points (node, service, function, file system) availability in real time during the cyber exercise. The system contents 3 main parts: 
 
 - **Service Prober Repository** : A service checking lib with server different probers function (such as check NTP, FTP, VNC, ssh ...) to detect whether a specific service/function is working normally.
-
 - **Prober Agent** :  A agent collects and schedule several different kinds of probers to check the entire availably of one or multiple targets’ state in the cluster. The prober agent provides below 4 main feature: 
 
   - It provide a profile configuration function so the user can easily use their customized profile to organize the probers together based his service monitor requirement.  
   - It can run inside the critical node to check the node's local state (such as the node resource usage, file system modification, user login or the program execution state), it can also run outside a node to check the service interface of a node. So the customer can deploy the agent based on his monitor priority instead of deploying agent to every node. 
   - To avoid changing the original routing config of a cluster, a prober agent can also fetch data from another prober to build a data translation bus to make the deployment easier.
   - The prober agent will report the state to the monitor hub for result visualization and analysis. 
-
 - **Monitor Hub** :  A data visualization and analysis system with 2 data bases, it provides a web-based dashboard for user to check the monitored cluster's state and it also provides the interface for user to plug in their score calculation formular/function. 
 
-  
+
+
+The Cyber Exercise Service and Resource Health Monitor is built upon and extends two existing core components: the **Cluster User Emulator** and the **Cluster Service Health Monitor**. By integrating these capabilities, the system provides a scalable and extensible platform for managing, observing, and analyzing cyber exercise environments.
+
+
+
+
 
 ##### System workflow diagram
 
