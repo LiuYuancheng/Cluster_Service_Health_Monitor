@@ -55,11 +55,200 @@ By combining lightweight deployment, flexible monitoring capabilities, and real-
 
 
 
+------
+
+### 2. System Overview
+
+#### 2.1 Three Layers System Architecture 
+
+The system will focus on monitoring three main sections of the cyber exercise: the cyber exercise infra,  the cyber range's service and the participants activates as shown below:
+
+![](doc/img/s_04.png)
+
+- **Cyber Exercise Infrastructure** :  The "hardware, node and wires" layer includes Resource Utilization, Network Latency & Throughput, Connectivity Status and System Health/Uptime. 
+- **Cyber Range Resource and Services** : The "software and function services" layer includes Core Network Services, Traffic Generation Integrity, Scenario Injection Delivery and Logging Pipeline. 
+- **Cyber Drill Participant Activities** : The "User Action" layer of what the participants are doing such as the Command Line & Tool Usage, Incident Response Timeline, Communication Flow and Task Completion Rate
+
+#### 2.2 Service Health Monitor Structure
+
+The Cluster Service Health Monitor is the system setup for the second layer  which evaluates the availability and integrity of critical components within a cybersecurity computing cluster. These components include nodes, services, system functions, and file systems. The system module diagram is shown below:
+
+![](doc/img/s_05.png)
+
+The system is composed of three main modules:
+
+**2.2.1 Service Prober Repository**
+
+A centralized library of service probing functions designed to verify the operational status of various services and protocols. These include, but are not limited to, NTP, FTP, VNC, and SSH. Each prober is responsible for detecting whether a specific service or function is operating normally and responding as expected.
+
+**2.2.2 Prober Agent**
+
+The Prober Agent is responsible for orchestrating and executing probing tasks across the cluster. It provides several key capabilities:
+
+- **Profile-Based Configuration**: Users can define customized monitoring profiles to group and organize probing functions based on specific requirements.
+- **Flexible Deployment Modes**: The agent can operate both internally (within a node) to monitor system-level metrics such as resource usage, file system changes, user activity, and process execution, and externally to assess service interfaces. This flexibility reduces the need to deploy agents on every node.
+- **Data Translation and Relay**: To avoid modifying existing network routing configurations, the agent can retrieve and relay data from other agents, effectively forming a distributed data collection bus.
+- **Centralized Reporting**: All collected monitoring data is sent to the Monitor Hub for visualization and further analysis.
+
+**2.2.3 Monitor Hub**
+
+The Monitor Hub acts as the central platform for data aggregation, visualization, and evaluation. It includes two databases for storing monitoring data and historical records. The hub provides:
+
+- A web-based dashboard for real-time visualization of cluster health and service status.
+- Interfaces for integrating custom scoring formulas or evaluation functions, allowing users to define how system health is quantified.
+- Analytical capabilities to support decision-making during cyber exercises.
+
+
+
+------
+
+### 3. System Design
+
+#### 3.1 Design of Service Prober Repository
+
+The Service Prober Repository is a modular library that provides probing functions for validating the availability and operational state of services and system components. The probers are categorized into two main types: local service probers and network service probers.
+
+**3.1.1 Local Service Probers**
+
+Local service probers are deployed within target nodes to monitor internal system states. These probers focus on host-level observability, including:
+
+- Resource utilization (CPU, memory, disk, network bandwidth)
+- User activities (login, command execution, file modifications)
+- Program execution state (running processes, service ports, logs)
+- Network interface and connection states
+
+Examples of Local Probers : 
+
+| Prober Name           | Probe Coverage                                             |
+| --------------------- | ---------------------------------------------------------- |
+| Resource Usage Prober | CPU %, Memory %, Disk usage, Network bandwidth             |
+| User Action Prober    | User login, command execution, file system modification    |
+| Program Action Prober | Process execution, port status, application log monitoring |
+
+**3.1.2 Network Service Probers**
+
+Network service probers operate externally to assess service availability through network interfaces. These probers simulate real client interactions and validate service-level functionality.
+
+Examples of Network Probers:
+
+| Prober Name             | Probe Coverage                                      |
+| ----------------------- | --------------------------------------------------- |
+| Server Active Prober    | ICMP (ping), SSH, RDP, VNC, X11 access              |
+| Service Ports Prober    | Port scanning (e.g., Nmap) to verify open ports     |
+| Service Function Prober | Functional validation of services such as:          |
+|                         | - NTP: latency and time synchronization accuracy    |
+|                         | - DNS: name resolution correctness                  |
+|                         | - DHCP: broadcast and lease functionality           |
+|                         | - FTP: login and directory listing                  |
+|                         | - HTTP/HTTPS: web request/response validation       |
+|                         | - Email: mail service availability                  |
+|                         | - TCP/UDP services: protocol-specific communication |
+|                         | - Database: connection and query validation         |
+
+This layered probing design ensures both system-level and service-level visibility across the monitored cluster.
+
+#### 3.2 Design of Prober Agent
+
+The Prober Agent acts as the execution and orchestration layer of the monitoring system. It is responsible for scheduling, managing, and executing multiple probers based on user-defined configurations. It will import the lib module from the Prober Repository as shown in the below module diagram:
+
+![](doc/img/s_06.png)
+
+**3.2.1 Key Features**
+
+- **Profile-Based Configuration** : Users can define customized monitoring profiles that group different probers according to specific monitoring requirements.
+
+- **Flexible Deployment** : The agent can operate Internally within nodes to monitor local system states or externally from remote nodes to assess service interfaces. 
+
+- **Extensibility via Custom Probers** : Users can integrate custom probing functions tailored to specific services (e.g., proprietary systems like billing servers).
+- **Distributed Data Relay Mechanism** : To avoid modifying existing network routing configurations, agents can retrieve data from other agents, forming a data translation bus for efficient data collection.
+- **Centralized Reporting** : All collected monitoring data is transmitted to the Monitor Hub for aggregation, analysis, and visualization.
+
+**3.2.2 Program Workflow Overview**
+
+The Prober Agent operates by below sequence :
+
+1. Loading a predefined monitoring profile
+2. Scheduling and executing relevant probers
+3. Collecting local and/or remote monitoring data
+4. Optionally aggregating data from peer agents
+5. Sending structured results to the Monitor Hub
+
+#### 3.3 Design of Service Monitor Hub
+
+The Service Monitor Hub is the central component responsible for data aggregation, analysis, scoring, and visualization. It provides users with actionable insights through a web-based dashboard (currently implemented using Grafana).
+
+**3.3.1 Core Functions**
+
+- Real-time visualization of cluster and service health
+- Integration of user-defined scoring models
+- Historical data storage and analysis
+- Support for decision-making during cyber exercises
+
+**3.3.2 Database Architecture**
+
+The Monitor Hub utilizes two dedicated databases:
+
+- **Raw Information Database** : Stores all collected raw monitoring data from Prober Agents for archival and traceability purposes.
+- **Score Database** : Stores processed data, including computed service availability scores and summarized system states, based on user-defined scoring functions.
+
+**3.3.3 Data Flow Architecture**
+
+The data processing pipeline within the Monitor Hub is illustrated below:
+
+```mermaid
+graph TD;
+	Communication_Manager -- All ProberAgents' Raw data --> Raw_Info_DataBase;
+	Raw_Info_DataBase -- Customer required data --> Data_manager;
+	Data_manager --> Score_Calculator;
+	Score_Calculator -- service state summary and score --> Score_database;
+	Score_database -- real time score information --> Grafana_service_score_dashboard;
+	Grafana_service_score_dashboard --> User;
+```
+
+**3.3.4 Data Flow Description**
+
+1. **Data Collection**: Prober Agents send raw monitoring data to the Communication Manager.
+2. **Data Storage**: Raw data is stored in the Raw Information Database.
+3. **Data Processing**: The Data Manager retrieves relevant data based on user requirements.
+4. **Score Calculation**: The Score Calculator applies user-defined formulas to compute service health scores.
+5. **Data Visualization**: Processed results are stored in the Score Database and displayed in real time via the Grafana dashboard.
+6. **User Interaction**: Users access insights through an intuitive web interface.
+
+
+
+------
+
+### 4. Monitor Web Dashboards Portal 
+
+The Cyber Exercise Resource Monitor System provides a suite of web-based dashboards to visualize real-time exercise information and support the operational needs of different teams. Each dashboard is designed with role-specific views to enhance situational awareness, coordination, and decision-making during cyber exercises. The example screen shot is shown below: 
+
+![](doc/img/s_07.png)
 
 
 
 
-**1.2 System Architecture** 
+
+
+
+
+
+1.**Exercise Overview Dashboard:** Used by the **Black/Judgement-Team** to monitor and control the whole exercise progress. 
+
+●
+
+2.**Service Health Dashboard:** Used by the **Blue-Team** to monitor health and availability of their team’s exercise-cluster. 
+
+●
+
+3.**Resource Availability Dashboard**: Used by the **Black/Judgement-Team**, **Red-Team**, **Blue-Team** and **Purple-Team** to monitor the detailed real time availability state of the resource.
+
+●
+
+4.**Information Dashboard:** purple-team to post the announcement to blue team, archiving the exercise document, post information to public 
+
+●
+
+5.**Assistance function Dashboards:** Used for full fill special monitor requirement of **Yellow-Team** and **Green-Team**.
 
 
 
@@ -71,36 +260,19 @@ By combining lightweight deployment, flexible monitoring capabilities, and real-
 
 
 
-We want to create a monitor system which can show customer the services availability of a mid size cluster in real time. The program can check the availability / execution state of each nodes/vms/services/programs in the cluster regularly and provide the health evaluation score based on user's requirement or pre-set calculation function. We aim to avoid the user making much change of their routing config of the switches in the network or installing much additional libs on their nodes during the setup to reduce the complexity of deployment. The system can be applied to monitor the below scenario:
-
-- Monitor the health of the related nodes/services used in a cyber exercise. 
-- Monitor whether some attack is happening or has happened on some critical nodes (such as NTP server)/service program of a cluster. 
-- Visualize the nodes' status changing during a cyber security drill/events. 
-
-
-
-The Cluster Service Heath Monitor is a system's function/service monitoring program to check and evaluate the cyber security computing cluster's critical points (node, service, function, file system) availability in real time during the cyber exercise. The system contents 3 main parts: 
-
-- **Service Prober Repository** : A service checking lib with server different probers function (such as check NTP, FTP, VNC, ssh ...) to detect whether a specific service/function is working normally.
-- **Prober Agent** :  A agent collects and schedule several different kinds of probers to check the entire availably of one or multiple targets’ state in the cluster. The prober agent provides below 4 main feature: 
-
-  - It provide a profile configuration function so the user can easily use their customized profile to organize the probers together based his service monitor requirement.  
-  - It can run inside the critical node to check the node's local state (such as the node resource usage, file system modification, user login or the program execution state), it can also run outside a node to check the service interface of a node. So the customer can deploy the agent based on his monitor priority instead of deploying agent to every node. 
-  - To avoid changing the original routing config of a cluster, a prober agent can also fetch data from another prober to build a data translation bus to make the deployment easier.
-  - The prober agent will report the state to the monitor hub for result visualization and analysis. 
-- **Monitor Hub** :  A data visualization and analysis system with 2 data bases, it provides a web-based dashboard for user to check the monitored cluster's state and it also provides the interface for user to plug in their score calculation formular/function. 
-
-
-
-The Cyber Exercise Service and Resource Health Monitor is built upon and extends two existing core components: the **Cluster User Emulator** and the **Cluster Service Health Monitor**. By integrating these capabilities, the system provides a scalable and extensible platform for managing, observing, and analyzing cyber exercise environments.
 
 
 
 
 
-##### System workflow diagram
 
-![](doc/img/workflow.png)
+
+
+
+
+
+
+------
 
 
 
@@ -120,7 +292,7 @@ The Cyber Exercise Service and Resource Health Monitor is built upon and extends
 
 ------
 
-### System Design
+### 
 
 
 
@@ -184,15 +356,7 @@ Score database: The data manage will analysis the monitored clusters' availabili
 
 The data follow of the Monitor hub
 
-```mermaid
-graph TD;
-	Communication_Manager -- All ProberAgents' Raw data --> Raw_Info_DataBase;
-	Raw_Info_DataBase -- Customer required data --> Data_manager;
-	Data_manager --> Score_Calculator;
-	Score_Calculator -- service state summary and score --> Score_database;
-	Score_database -- real time score information --> Grafana_service_score_dashboard;
-	Grafana_service_score_dashboard --> User;
-```
+
 
 
 
