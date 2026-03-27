@@ -4,14 +4,11 @@ us English |
 
 **Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide real-time Visualization software for showcasing the availability, status, and performance of critical resources—including hardware, virtual machines (VMs), containers, applications, and services—throughout the lifecycle of an exercise.
 
-With the function provided by the monitoring system, both the cyber exercise/drill organizers and participants will have a better understand of real-time progress of the exercise, identify potential issues, and respond effectively. This improves situational awareness, enhances coordination across teams, and ensures the smooth execution of complex cyber range scenarios. The main features and function of the system is designed to fulfill the operational needs of multiple teams involved in cyber exercises:
+The system is designed to support a range of operational scenarios for different exercise origination and participation team, particularly in cybersecurity training and simulation environments:
 
-- **Black (Judgment) Team**: Provides a overview of the entire exercise, including team status, scoring, resource availability, and overall defense progress, enabling accurate evaluation and decision-making. 
-- **Green (Setup) Team**: Supports environment setup, testing, and debugging by offering detailed insights into system health and service readiness during preparation and execution phases.
-- **Blue (Defense) Team**: Enables real-time monitoring of the infrastructure and services under defense, helping defenders quickly detect anomalies and assess system conditions.
-- **Red (Attack) Team**: Assists in reporting attack progress and evaluating the effectiveness and impact of offensive actions on the target environment.
-- **Yellow (Operation) Team**: Facilitates the simulation of normal user behavior to enhance realism and provide baseline activity within the exercise environment.
-- **Purple (Record) Team**: Records the full timeline of exercise events and archives logs for post-exercise analysis, learning, and improvement.
+- **Cyber Exercise Monitoring**: Track the health and availability of nodes and services used during cyber exercises, ensuring that the environment remains stable and functional.
+- **Attack Detection and Impact Awareness**: Identify abnormal behaviors or disruptions in critical services (e.g., NTP servers), which may indicate ongoing or completed cyber attacks.
+- **Real-Time Visualization**: Observe dynamic changes in node and service states during cybersecurity drills, enabling participants and organizers to understand the evolving situation.
 
 Furthermore, the system incorporates automated mechanisms to detect and record attack activities and corresponding defense actions, enabling accurate event tracking and forensic analysis.
 
@@ -29,7 +26,50 @@ Furthermore, the system incorporates automated mechanisms to detect and record a
 
 ------
 
-### Introduction
+### 1. Introduction
+
+The Cyber Exercise Service and Resource Health Monitor System is designed to continuously evaluate the execution status/progress of nodes, virtual machines (VMs), services, and application programs, and generates health evaluation scores based on user-defined requirements or preconfigured scoring models.
+
+#### 1.1 Abstract and Overview
+
+There are several software to monitor the health state of different services in a system, but currently there are not much system designed to focus on providing real-time visibility into the availability and operational state of a cyber exercises / drills. The key design goal of the Cyber Exercise Service and Resource Health Monitor System is to minimize deployment complexity. It avoids requiring significant modifications to existing network routing configurations (e.g., switches) and reduces the need for installing additional libraries on monitored nodes. This lightweight and flexible approach allows users to rapidly integrate the monitoring system into existing infrastructures, particularly in cyber range and cyber exercise environments.
+
+The system supports multiple critical use cases for different types requirements of exercise teams, including real-time monitoring of infrastructure health during cyber exercises, detection of potential attacks on critical services (such as NTP servers), and visualization of system state transitions during cybersecurity drills and events. 
+
+#### 1.2 Development and Usage Background
+
+Cyber exercise teams are categorized by their roles in simulating, defending against, or managing cybersecurity incidents. The system is developed based on the usage requirement feedback of different team as shown below:
+
+![](doc/img/s_03.png)
+
+With the function provided by the monitoring system, both the cyber exercise/drill organizers and participants will have a better understand of real-time progress of the exercise, identify potential issues, and respond effectively. This improves situational awareness, enhances coordination across teams, and ensures the smooth execution of complex cyber range scenarios. The main features and function of the system is designed to fulfill the operational needs of multiple teams involved in cyber exercises:
+
+- **Black (Judgment) Team**: Provides a overview of the entire exercise, including team status, scoring, resource availability, and overall defense progress, enabling accurate evaluation and decision-making. 
+- **Green (Setup) Team**: Supports environment setup, testing, and debugging by offering detailed insights into system health and service readiness during preparation and execution phases.
+- **Blue (Defense) Team**: Enables real-time monitoring of the infrastructure and services under defense, helping defenders quickly detect anomalies and assess system conditions.
+- **Red (Attack) Team**: Assists in reporting attack progress and evaluating the effectiveness and impact of offensive actions on the target environment.
+- **Yellow (Operation) Team**: Facilitates the simulation of normal user behavior to enhance realism and provide baseline activity within the exercise environment.
+- **Purple (Record) Team**: Records the full timeline of exercise events and archives logs for post-exercise analysis, learning, and improvement.
+
+By combining lightweight deployment, flexible monitoring capabilities, and real-time visualization, the system enhances situational awareness and operational efficiency in complex cyber range environments.
+
+
+
+
+
+
+
+**1.2 System Architecture** 
+
+
+
+
+
+
+
+
+
+
 
 We want to create a monitor system which can show customer the services availability of a mid size cluster in real time. The program can check the availability / execution state of each nodes/vms/services/programs in the cluster regularly and provide the health evaluation score based on user's requirement or pre-set calculation function. We aim to avoid the user making much change of their routing config of the switches in the network or installing much additional libs on their nodes during the setup to reduce the complexity of deployment. The system can be applied to monitor the below scenario:
 
