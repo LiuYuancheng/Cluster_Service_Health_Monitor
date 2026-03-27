@@ -224,145 +224,100 @@ The Cyber Exercise Resource Monitor System provides a suite of web-based dashboa
 
 ![](doc/img/s_07.png)
 
+Currently, five main types of dashboards are supported:
+
+- Exercise Overview Dashboard - Black (Judgment) Team
+- Service Health Dashboard - Blue Team
+- Resource Availability Dashboard  - Black (Judgment), Red, Blue, and Purple Teams
+- Information and Announcement Dashboard - Purple Team (Primary), All Teams (Consumers)
+- Assistance Function Dashboards - Green Team and Yellow Team
 
 
 
+#### 4.1 Exercise Overview Dashboard
+
+The Cyber Exercise Overview Dashboard is primarily used by the Black (Judgment) Team to monitor, manage, and control the overall progress of the cyber exercise. It provides a centralized, real-time view of key operational metrics and event status, enabling effective decision-making and coordination. The dashboard screen shot is shown below:
+
+![](doc/img/s_08.png)
+
+The dashboard includes the following information:
+
+- **Latest Updates and Live Feed**: Displays the latest news, announcements, and live video from the exercise venue.
+- **Attack and Defense Status**: Visualizes the current state of ongoing attack and defense activities across the exercise environment.
+- **Team Performance and Scoring**: Shows the scores of all Blue Teams, along with a summary of tickets raised and resolved during the exercise.
+- **Resource Availability Overview**: Provides a high-level view of the availability and health of resources across all participating teams.
+- **Real-Time Event Timeline**: Tracks and displays key exercise events as they occur, offering a chronological view of activities and incidents.
 
 
 
+#### 4.2 Service Health Dashboard
 
+The Cyber Exercise Service Health Dashboard is designed for the Blue Team to monitor the health, availability, and operational status of the sub-exercise environment or cluster under their responsibility. It provides real-time insights that enable defenders to analyze system conditions, detect anomalies, raise incident tickets, and plan appropriate defense actions. The dashboard screen shot is shown below:
 
-1.**Exercise Overview Dashboard:** Used by the **Black/Judgement-Team** to monitor and control the whole exercise progress. 
+![](doc/img/s_09.png)
 
-●
+Each Blue Team is provided with a dedicated dashboard tailored to their assigned environment.
 
-2.**Service Health Dashboard:** Used by the **Blue-Team** to monitor health and availability of their team’s exercise-cluster. 
+The dashboard provides the following key information:
 
-●
-
-3.**Resource Availability Dashboard**: Used by the **Black/Judgement-Team**, **Red-Team**, **Blue-Team** and **Purple-Team** to monitor the detailed real time availability state of the resource.
-
-●
-
-4.**Information Dashboard:** purple-team to post the announcement to blue team, archiving the exercise document, post information to public 
-
-●
-
-5.**Assistance function Dashboards:** Used for full fill special monitor requirement of **Yellow-Team** and **Green-Team**.
+- **Node Health and Availability**: Real-time status of nodes within the cluster, including uptime and operational health.
+- **Network Topology and Traffic State**: Visualization of the environment’s network structure along with current traffic conditions and potential anomalies.
+- **Service and Application Status**: Monitoring of service availability and program execution states across the cluster.
+- **Critical Host Activity Monitoring**: Tracking of login activities and command executions on critical nodes for security auditing and anomaly detection.
+- **System Logs and Defense Score**: Access to cluster system logs and the current defense score of the team for performance tracking.
 
 
 
+#### 4.3 Resource Availability Dashboard
+
+The **Resource Availability Dashboard** provides a detailed, real-time view of the availability and status of all exercise resources, including hardware, virtual machines (VMs), containers, applications, and services. It is designed to support the operational and analytical needs of multiple teams involved in the cyber exercise. The dashboard screen shot is shown below:
+
+![](doc/img/s_10.png)
+
+This dashboard enables different teams to perform the following functions:
+
+- **Black (Judgment) Team**: Evaluate team performance by analyzing resource availability, system states, and the impact of actions on overall scoring and exercise progress.
+- **Red Team**: Assess the effectiveness and impact of launched attacks by observing changes in resource availability and system behavior within the target environment.
+- **Green Team**: Monitor connectivity and health of critical nodes and hosts, supporting environment validation, troubleshooting, and debugging of issues during the exercise.
+- **Purple Team**: Archive and review the overall resource state of the exercise environment for post-event analysis, reporting, and knowledge retention.
 
 
 
+#### 4.4 Information and Announcement Dashboard
+
+The **Information and Announcement Dashboard** is primarily managed by the **Purple Team** and serves as the central communication and information portal for the cyber exercise. It is used to publish announcements, share updates with participating teams (especially the Blue Team), archive exercise-related materials, and provide selected information to the public as a homepage interface. The dashboard screen shot is shown below:
+
+![](doc/img/s_11.png)
+
+This dashboard ensures consistent communication, improves information accessibility, and supports both real-time coordination and post-exercise documentation. The dashboard includes the following panels:
+
+- **Event Schedule Timeline Panel** : Displays the overall schedule of the exercise, including key milestones and planned activities.
+- **Exercise Progress Timeline Panel** : Provides a real-time timeline of exercise events using the new timeline system, allowing users to track ongoing activities and incidents.
+- **Dashboard List Panel** : Offers quick access to all available monitoring dashboards within the system.
+- **Exercise Schedule Panel** : Presents detailed scheduling information, including session breakdowns and timing for specific activities.
+- **Organizing Committee Panel** : Introduces the organizing team and key stakeholders involved in the exercise.
+- **Exercise Document Download Panel** : Provides access to relevant documents, guidelines, and resources for participants.
+- **Participating Organizations Display Panel** : Showcases the organizations involved in the exercise, supporting visibility and collaboration.
 
 
 
+#### 4.5 Assistance Function Dashboard
 
+The **Assistance Function Dashboard** consists of a set of customized dashboards designed to visualize the execution state of specific functions that fulfill additional operational requirements of the cyber exercise. These dashboards provide targeted support for specialized teams by offering real-time insights into auxiliary systems and activities. The dashboard screen shot is shown below:
 
+![](doc/img/s_12.png)
 
+The dashboards include:
 
-
-
-
-
-
-
-
+- **User Behavior Simulation Dashboard (Yellow Team)** : Displays the status of normal user behavior simulations and traffic generation activities, helping to maintain realistic baseline conditions within the exercise environment.
+- **Attack Activity Monitoring Dashboard (Red Team)** : Visualizes ongoing attack operations, including launched attacks and automatically triggered unexpected or potentially harmful actions, enabling better tracking and reporting of offensive activities.
+- **Connectivity and Network Support Dashboard (Green Team)** : Monitors internet connectivity, VPN status, and bandwidth usage to ensure stable infrastructure and network support throughout the exercise.
 
 
 
 ------
 
-
-
-##### State monitor and score dashboard
-
-![](doc/img/Slide3.PNG)
-
-![](doc/img/Slide4.PNG)
-
-![](doc/img/Slide5.PNG)
-
-![](doc/img/Slide5.PNG)
-
-`version: v0.1` 
-
-
-
-------
-
-### 
-
-
-
-##### Service Prober Repository
-
-Service Prober Repository is a prober module lib to provide the service/program function check function. The prober function can be categorized to 2 part, local service prober and network probers.
-
-- Local service prober : The local service prober will run inside the target node to monitor the nodes resource usage (CPU%, Memory, Hard disk, user), network state (port opened, connection, NIC I/O state), local program execution state (process) and file system modification.  
-
-  | Prober Name           | Probe action/ service covered                               |
-  | --------------------- | ----------------------------------------------------------- |
-  | Resource usage Prober | CPU %, Memory %, Hard Disk %, Network Bandwidth Usage.      |
-  | User action Prober    | User login, cmd execute, file system modification.          |
-  | Program action prober | Process execution, service port opened, program  log check. |
-
-- Network service prober: The service prober run outside the target node to check the node's service through network. 
-
-  | Prober Name             | Probe action/ service covered                                |
-  | ----------------------- | ------------------------------------------------------------ |
-  | Server active Prober    | ICMP (ping), SSH(login), RDP, VNC, X11/X11:1-Win             |
-  | Service ports prober    | Nmap check the node's request service ports are opened.      |
-  | Service function prober | NTP service prober : Check the NTP service latency and time offset correctness. |
-  |                         | DNS/NS service prober: Check the dns service name mapping correct. |
-  |                         | DHCP service prober: Check the dhcp broadcast.               |
-  |                         | FTP service prober : Whether can login the FTP server and list the directory tree. |
-  |                         | Http/https web prober: Check the webserver can handle request correctly |
-  |                         | Email service prober: Check whether the email server is working normally. |
-  |                         | TCP service prober: Service use TCP connection. (such as MS-Teams service) |
-  |                         | UDP service prober: service use UDP connection. (such as Skype service) |
-  |                         | Database service prober: Check the database connection.      |
-
-  
-
-##### Prober Agent
-
-A agent collects and schedule several different kinds of probers based on the config profile to check the entire service availably of a small cluster.  The prober agent provides below 5 main feature: 
-
-- It provide a profile configuration function so the user can easily use their customized profile to organize the probers together based his service monitor requirement.  
-- It can run inside the critical node to check the node's local state (such as the node resource usage, file system modification, user login or the program execution state), it can also run outside a node to check the service interface of a node. So the customer can deploy the agent based on his monitor priority instead of deploying agent to every node. 
-- It also provide the interface for customer to plugin their customized prober function for specific service (such as a billing server)
-- To avoid changing the original routing config of a cluster, a prober agent can also fetch data from another prober to build a data translation bus to make the deployment easier.
-- The prober agent will report the state to the monitor hub for result visualization and analysis. 
-
-The work flow of prober agent : 
-
-![](doc/img/probeAgent.png)
-
-
-
-##### Monitor Hub 
-
-The monitor hub is a data visualization and analysis system. It provides a web-based dashboard (currently we use Grafana ) for user to check the monitored cluster's state and it also provides the interface for user to plug in their score calculation formular/function.  
-
-Two data bases will be included  in the program: 
-
-Raw info database: database used to archiving all the collected service data, 
-
-Score database: The data manage will analysis the monitored clusters' availability and calculate the service core based on customer's score calculation function. then save all the data need to be visualized in the score database.  
-
-
-
-The data follow of the Monitor hub
-
-
-
-
-
-------
-
-Use Case;
+### 5. Use Case Example 
 
 The Cluster Service Heath Monitor has been deployed on the NCL's AS-06 cluster to monitor 17 nodes with 71 services as shown below: 
 
@@ -384,10 +339,6 @@ The monitor dashboard:
 ![](doc/img/dashboard_00.png)
 
 ![](doc/img/useCase_02.png)
-
-
-
-
 
 
 
