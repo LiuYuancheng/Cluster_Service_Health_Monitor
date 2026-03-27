@@ -4,6 +4,8 @@ us English |
 
 **Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide real-time Visualization software for showcasing the availability, status, and performance of critical resources—including hardware, virtual machines (VMs), containers, applications, and services—throughout the lifecycle of an exercise.
 
+![](doc/img/title.png)
+
 The system is designed to support a range of operational scenarios for different exercise origination and participation team, particularly in cybersecurity training and simulation environments:
 
 - **Cyber Exercise Monitoring**: Track the health and availability of nodes and services used during cyber exercises, ensuring that the environment remains stable and functional.
@@ -319,7 +321,13 @@ The dashboards include:
 
 ### 5. Use Case Example 
 
-The Cluster Service Heath Monitor has been deployed on the NCL's AS-06 cluster to monitor 17 nodes with 71 services as shown below: 
+The **Cluster Service Health Monitor** has been successfully deployed on the NCL **AS-06 cluster (COM1-AS06)** to demonstrate its capability in monitoring a mid-sized cyber exercise environment. In this deployment, the system monitors a total of **17 nodes** and **71 services** across multiple critical infrastructure components. The detail system workflow is shown as below diagram: 
+
+![](doc/img/useCase_00.png)
+
+#### 5.1 Monitored Cluster Overview
+
+The monitored targets and services are summarized below:
 
 | Probed target service cluster | Node number | Service checked                                              |
 | ----------------------------- | ----------- | ------------------------------------------------------------ |
@@ -330,9 +338,7 @@ The Cluster Service Heath Monitor has been deployed on the NCL's AS-06 cluster t
 | GPU                           | 3           | icmp, ssh, vnc, Nvidia-smi                                   |
 | Support                       | 4           | NTP, ftp, file.                                              |
 
-The detail system workflow is shown as below diagram: 
-
-![](doc/img/useCase_00.png)
+#### 5.2 Monitor Dashboard Overview
 
 The monitor dashboard: 
 
@@ -344,5 +350,4 @@ The monitor dashboard:
 
 ------
 
-> Last edit by LiuYuancheng(liu_yuan_cheng@hotmail.com) at 22/03/2023, if you have any problem or find anu bug, please send me a message .
-
+> Last edit by LiuYuancheng (liu_yuan_cheng@hotmail.com) at 22/03/2026, if you have any problem or find anu bug, please send me a message .
