@@ -220,7 +220,7 @@ graph TD;
 
 ### 4. Monitor Web Dashboards Portal 
 
-The Cyber Exercise Resource Monitor System provides a suite of web-based dashboards to visualize real-time exercise information and support the operational needs of different teams. Each dashboard is designed with role-specific views to enhance situational awareness, coordination, and decision-making during cyber exercises. The example screen shot is shown below: 
+The system provides a suite of web-based dashboards to visualize real-time exercise information and support the operational needs of different teams. Each dashboard is designed with role-specific views to enhance situational awareness, coordination, and decision-making during cyber exercises. The screen shot examples is shown below: 
 
 ![](doc/img/s_07.png)
 
@@ -236,15 +236,15 @@ Currently, five main types of dashboards are supported:
 
 #### 4.1 Exercise Overview Dashboard
 
-The Cyber Exercise Overview Dashboard is primarily used by the Black (Judgment) Team to monitor, manage, and control the overall progress of the cyber exercise. It provides a centralized, real-time view of key operational metrics and event status, enabling effective decision-making and coordination. The dashboard screen shot is shown below:
+The Cyber Exercise Overview Dashboard is primarily used by the Black (Judgment) Team to monitor, manage, and control the overall progress of the cyber exercise. It provides a centralized, real-time view of key operational metrics and event status, enabling effective decision-making and coordination. The dashboard screen shot example is shown below:
 
 ![](doc/img/s_08.png)
 
-The dashboard includes the following information:
+The dashboard includes the following information Panels :
 
 - **Latest Updates and Live Feed**: Displays the latest news, announcements, and live video from the exercise venue.
 - **Attack and Defense Status**: Visualizes the current state of ongoing attack and defense activities across the exercise environment.
-- **Team Performance and Scoring**: Shows the scores of all Blue Teams, along with a summary of tickets raised and resolved during the exercise.
+- **Team Performance and Scoring**: Panel shows the scores of all Blue Teams, along with a summary of tickets raised and resolved during the exercise.
 - **Resource Availability Overview**: Provides a high-level view of the availability and health of resources across all participating teams.
 - **Real-Time Event Timeline**: Tracks and displays key exercise events as they occur, offering a chronological view of activities and incidents.
 
@@ -256,13 +256,11 @@ The Cyber Exercise Service Health Dashboard is designed for the Blue Team to mon
 
 ![](doc/img/s_09.png)
 
-Each Blue Team is provided with a dedicated dashboard tailored to their assigned environment.
-
-The dashboard provides the following key information:
+Each Blue Team is provided with a dedicated dashboard tailored to their assigned environment. The dashboard provides the following key information:
 
 - **Node Health and Availability**: Real-time status of nodes within the cluster, including uptime and operational health.
 - **Network Topology and Traffic State**: Visualization of the environment’s network structure along with current traffic conditions and potential anomalies.
-- **Service and Application Status**: Monitoring of service availability and program execution states across the cluster.
+- **Service and Application Status**: Monitoring of service availability and program execution states across the clusters.
 - **Critical Host Activity Monitoring**: Tracking of login activities and command executions on critical nodes for security auditing and anomaly detection.
 - **System Logs and Defense Score**: Access to cluster system logs and the current defense score of the team for performance tracking.
 
@@ -270,7 +268,7 @@ The dashboard provides the following key information:
 
 #### 4.3 Resource Availability Dashboard
 
-The **Resource Availability Dashboard** provides a detailed, real-time view of the availability and status of all exercise resources, including hardware, virtual machines (VMs), containers, applications, and services. It is designed to support the operational and analytical needs of multiple teams involved in the cyber exercise. The dashboard screen shot is shown below:
+The Resource Availability Dashboard provides a detailed, real-time view of the availability and status of all exercise resources, including hardware, virtual machines (VMs), containers, applications, and services. It is designed to support the operational and analytical needs of multiple teams involved in the cyber exercise. The dashboard screen shot is shown below:
 
 ![](doc/img/s_10.png)
 
@@ -285,7 +283,7 @@ This dashboard enables different teams to perform the following functions:
 
 #### 4.4 Information and Announcement Dashboard
 
-The **Information and Announcement Dashboard** is primarily managed by the **Purple Team** and serves as the central communication and information portal for the cyber exercise. It is used to publish announcements, share updates with participating teams (especially the Blue Team), archive exercise-related materials, and provide selected information to the public as a homepage interface. The dashboard screen shot is shown below:
+The Information and Announcement Dashboard is primarily managed by the Purple Team and serves as the central communication and information portal for the cyber exercise. It is used to publish announcements, share updates with participating teams (especially the Blue Team), archive exercise-related materials, and provide selected information to the public as a homepage interface. The dashboard screen shot is shown below:
 
 ![](doc/img/s_11.png)
 
@@ -303,7 +301,7 @@ This dashboard ensures consistent communication, improves information accessibil
 
 #### 4.5 Assistance Function Dashboard
 
-The **Assistance Function Dashboard** consists of a set of customized dashboards designed to visualize the execution state of specific functions that fulfill additional operational requirements of the cyber exercise. These dashboards provide targeted support for specialized teams by offering real-time insights into auxiliary systems and activities. The dashboard screen shot is shown below:
+The Assistance Function Dashboard consists of a set of customized dashboards designed to visualize the execution state of specific functions that fulfill additional operational requirements of the cyber exercise. These dashboards provide targeted support for specialized teams by offering real-time insights into auxiliary systems and activities. The dashboard screen shot is shown below:
 
 ![](doc/img/s_12.png)
 
