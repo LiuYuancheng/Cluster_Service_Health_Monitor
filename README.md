@@ -2,17 +2,17 @@
 
 us English | 
 
-**Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide real-time Visualization software for showcasing the availability, status, and performance of critical resources—including hardware, virtual machines (VMs), containers, applications, and services—throughout the lifecycle of an exercise.
+**Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide the real-time visualization software for showcasing the availability, status, and performance of resources—including hardware, virtual machines (VMs), containers, applications, and software services—throughout the lifecycle of an exercise.
 
 ![](doc/img/title.png)
 
-The system is designed to support a range of operational scenarios for different exercise origination and participation team, particularly in cybersecurity training and simulation environments:
+The system is developed to support a range of operational scenarios for different exercise origination and participation teams, particularly in cybersecurity training and simulation environments:
 
-- **Cyber Exercise Monitoring**: Track the health and availability of nodes and services used during cyber exercises, ensuring that the environment remains stable and functional.
-- **Attack Detection and Impact Awareness**: Identify abnormal behaviors or disruptions in critical services (e.g., NTP servers), which may indicate ongoing or completed cyber attacks.
-- **Real-Time Visualization**: Observe dynamic changes in node and service states during cybersecurity drills, enabling participants and organizers to understand the evolving situation.
+- **Exercise Resource Monitoring** : Track the health and availability of nodes and services used during cyber exercises, ensuring that the environment remains stable and functional.
+- **Attack Detection and Impact Awareness** : Identify abnormal behaviors or disruptions in critical services (e.g., NTP servers), which may indicate ongoing or completed possible cyber attacks.
+- **Real-Time Visualization** : Observe dynamic changes in node and service states during cybersecurity drills, enabling participants and organizers to understand the evolving situation.
 
-Furthermore, the system incorporates automated mechanisms to detect and record attack activities and corresponding defense actions, enabling accurate event tracking and forensic analysis.
+Furthermore, the system incorporates automated mechanisms to detect and record attack activities and corresponding defense actions, enabling accurate event tracking and digital forensic analysis.
 
 ```python
 # Author:      Yuancheng Liu
@@ -30,21 +30,21 @@ Furthermore, the system incorporates automated mechanisms to detect and record a
 
 ### 1. Introduction
 
-The Cyber Exercise Service and Resource Health Monitor System is designed to continuously evaluate the execution status/progress of nodes, virtual machines (VMs), services, and application programs, and generates health evaluation scores based on user-defined requirements or preconfigured scoring models.
+The system is designed to continuously evaluate the execution status/progress of nodes, virtual machines (VMs), services, and application programs, and generates health evaluation scores based on user-defined requirements or preconfigured scoring models. 
 
 #### 1.1 Abstract and Overview
 
-There are several software to monitor the health state of different services in a system, but currently there are not much system designed to focus on providing real-time visibility into the availability and operational state of a cyber exercises / drills. The key design goal of the Cyber Exercise Service and Resource Health Monitor System is to minimize deployment complexity. It avoids requiring significant modifications to existing network routing configurations (e.g., switches) and reduces the need for installing additional libraries on monitored nodes. This lightweight and flexible approach allows users to rapidly integrate the monitoring system into existing infrastructures, particularly in cyber range and cyber exercise environments.
+There are several software to monitor the health state of different services in a system or cluster, but currently there are not much software designed to focus on providing real-time visibility into the availability and operational state of a cyber exercises / drills. The key design goal of the Cyber Exercise Service and Resource Health Monitor System is to minimize deployment complexity. It avoids requiring significant modifications to existing network routing configurations (e.g., switches) and reduces the need for installing additional libraries on monitored nodes. This lightweight and flexible approach allows users to rapidly integrate the monitoring system into existing cyber exercise infrastructures, particularly in cyber range and cyber drill environments.
 
-The system supports multiple critical use cases for different types requirements of exercise teams, including real-time monitoring of infrastructure health during cyber exercises, detection of potential attacks on critical services (such as NTP servers), and visualization of system state transitions during cybersecurity drills and events. 
+The system supports multiple use cases for different types requirements of exercise teams, including monitoring of infrastructure health during cyber exercises, detection of potential attacks on critical services (such as NTP servers), and visualization of system state transitions during cybersecurity drills and events. 
 
 #### 1.2 Development and Usage Background
 
-Cyber exercise teams are categorized by their roles in simulating, defending against, or managing cybersecurity incidents. The system is developed based on the usage requirement feedback of different team as shown below:
+Cyber exercise teams are categorized by their roles in simulating, defending against, or managing cybersecurity incidents. The system is developed based on the usage requirements feedback of different teams as shown below:
 
 ![](doc/img/s_03.png)
 
-With the function provided by the monitoring system, both the cyber exercise/drill organizers and participants will have a better understand of real-time progress of the exercise, identify potential issues, and respond effectively. This improves situational awareness, enhances coordination across teams, and ensures the smooth execution of complex cyber range scenarios. The main features and function of the system is designed to fulfill the operational needs of multiple teams involved in cyber exercises:
+With the function provided by the monitoring system, both the cyber exercise/drill organizers and participants will have a better understand of the progress of the exercise, identify potential issues, and respond effectively. This improves situational awareness, enhances coordination across teams, and ensures the smooth execution of complex cyber range scenarios. The main features and function of the system is designed to fulfill the operational needs of multiple teams involved in cyber exercises:
 
 - **Black (Judgment) Team**: Provides a overview of the entire exercise, including team status, scoring, resource availability, and overall defense progress, enabling accurate evaluation and decision-making. 
 - **Green (Setup) Team**: Supports environment setup, testing, and debugging by offering detailed insights into system health and service readiness during preparation and execution phases.
@@ -52,8 +52,6 @@ With the function provided by the monitoring system, both the cyber exercise/dri
 - **Red (Attack) Team**: Assists in reporting attack progress and evaluating the effectiveness and impact of offensive actions on the target environment.
 - **Yellow (Operation) Team**: Facilitates the simulation of normal user behavior to enhance realism and provide baseline activity within the exercise environment.
 - **Purple (Record) Team**: Records the full timeline of exercise events and archives logs for post-exercise analysis, learning, and improvement.
-
-By combining lightweight deployment, flexible monitoring capabilities, and real-time visualization, the system enhances situational awareness and operational efficiency in complex cyber range environments.
 
 
 
@@ -63,17 +61,17 @@ By combining lightweight deployment, flexible monitoring capabilities, and real-
 
 #### 2.1 Three Layers System Architecture 
 
-The system will focus on monitoring three main sections of the cyber exercise: the cyber exercise infra,  the cyber range's service and the participants activates as shown below:
+The system will focus on monitoring three main sections of the cyber exercise from hardware to people : The cyber exercise infra section,  The cyber range's service section and the participants activates section as shown in below feature diagram :
 
 ![](doc/img/s_04.png)
 
-- **Cyber Exercise Infrastructure** :  The "hardware, node and wires" layer includes Resource Utilization, Network Latency & Throughput, Connectivity Status and System Health/Uptime. 
-- **Cyber Range Resource and Services** : The "software and function services" layer includes Core Network Services, Traffic Generation Integrity, Scenario Injection Delivery and Logging Pipeline. 
-- **Cyber Drill Participant Activities** : The "User Action" layer of what the participants are doing such as the Command Line & Tool Usage, Incident Response Timeline, Communication Flow and Task Completion Rate
+- **Cyber Exercise Infrastructure** :  The "hardware, node and wires" layer includes `Resource Utilization`, `Network Latency & Throughput`, `Connectivity Status` and `Cluster Health/Uptime`. 
+- **Cyber Range Resource and Services** : The "software and function services" layer includes `Core Network Services`, `Traffic Generation Integrity`, `Scenario Injection Delivery` and `Logging Pipeline`. 
+- **Cyber Drill Participant Activities** : The "User Action" layer of what the participants are doing such as the `Command Line & Tool Usage`, `Incident Response Timeline`, `Communication Flow` and `Task Completion Rate`.
 
 #### 2.2 Service Health Monitor Structure
 
-The Cluster Service Health Monitor is the system setup for the second layer  which evaluates the availability and integrity of critical components within a cybersecurity computing cluster. These components include nodes, services, system functions, and file systems. The system module diagram is shown below:
+The Cluster Service Health Monitor will be setup in the second layer which evaluates the availability and integrity of critical components within a cybersecurity computing cluster ( nodes, services, system functions, and file systems). The program module diagram is shown below:
 
 ![](doc/img/s_05.png)
 
@@ -81,24 +79,24 @@ The system is composed of three main modules:
 
 **2.2.1 Service Prober Repository**
 
-A centralized library of service probing functions designed to verify the operational status of various services and protocols. These include, but are not limited to, NTP, FTP, VNC, and SSH. Each prober is responsible for detecting whether a specific service or function is operating normally and responding as expected.
+A centralized library of service probing functions designed to verify the operational status of various services and protocols such as NTP, FTP, VNC, and SSH. Each prober is responsible for detecting whether a specific service or function is operating normally and responding as expected.
 
 **2.2.2 Prober Agent**
 
-The Prober Agent is responsible for orchestrating and executing probing tasks across the cluster. It provides several key capabilities:
+The Prober Agent will import the module from service prober lib to finish the checking tasks across the cluster. The key feature includes:
 
 - **Profile-Based Configuration**: Users can define customized monitoring profiles to group and organize probing functions based on specific requirements.
-- **Flexible Deployment Modes**: The agent can operate both internally (within a node) to monitor system-level metrics such as resource usage, file system changes, user activity, and process execution, and externally to assess service interfaces. This flexibility reduces the need to deploy agents on every node.
+- **Flexible Deployment Modes**: The agent can operate both internally (within a node) to monitor system-level metrics such as resource usage, file system changes, user activity, and process execution, or externally to assess service interfaces. 
 - **Data Translation and Relay**: To avoid modifying existing network routing configurations, the agent can retrieve and relay data from other agents, effectively forming a distributed data collection bus.
 - **Centralized Reporting**: All collected monitoring data is sent to the Monitor Hub for visualization and further analysis.
 
 **2.2.3 Monitor Hub**
 
-The Monitor Hub acts as the central platform for data aggregation, visualization, and evaluation. It includes two databases for storing monitoring data and historical records. The hub provides:
+The Monitor Hub acts as the central platform for data aggregation, visualization, and evaluation. It includes two databases for storing monitoring data and historical raw records. The hub provides:
 
 - A web-based dashboard for real-time visualization of cluster health and service status.
 - Interfaces for integrating custom scoring formulas or evaluation functions, allowing users to define how system health is quantified.
-- Analytical capabilities to support decision-making during cyber exercises.
+- Analytical capabilities to support auto decision-making during cyber exercises.
 
 
 
@@ -129,7 +127,7 @@ Examples of Local Probers :
 
 **3.1.2 Network Service Probers**
 
-Network service probers operate externally to assess service availability through network interfaces. These probers simulate real client interactions and validate service-level functionality.
+Network service probers operate externally to assess the target service node's availability through network interfaces. These probers simulate real client interactions and validate service-level functionality.
 
 Examples of Network Probers:
 
@@ -151,7 +149,7 @@ This layered probing design ensures both system-level and service-level visibili
 
 #### 3.2 Design of Prober Agent
 
-The Prober Agent acts as the execution and orchestration layer of the monitoring system. It is responsible for scheduling, managing, and executing multiple probers based on user-defined configurations. It will import the lib module from the Prober Repository as shown in the below module diagram:
+The Prober Agent acts as the execution and orchestration layer of the monitoring system. It is responsible for scheduling, managing, and executing multiple probers based on user-defined configurations. It will import the lib module from the `Prober Repository` as shown in the below module import diagram:
 
 ![](doc/img/s_06.png)
 
