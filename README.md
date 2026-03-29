@@ -26,6 +26,27 @@ Furthermore, the system incorporates automated mechanisms to detect and record a
 
 [TOC]
 
+- [Cyber Exercise Service and Resource Health Monitor](#cyber-exercise-service-and-resource-health-monitor)
+    + [1. Introduction](#1-introduction)
+      - [1.1 Abstract and Overview](#11-abstract-and-overview)
+      - [1.2 Development and Usage Background](#12-development-and-usage-background)
+    + [2. System Overview](#2-system-overview)
+      - [2.1 Three Layers System Architecture](#21-three-layers-system-architecture)
+      - [2.2 Service Health Monitor Structure](#22-service-health-monitor-structure)
+    + [3. System Design](#3-system-design)
+      - [3.1 Design of Service Prober Repository](#31-design-of-service-prober-repository)
+      - [3.2 Design of Prober Agent](#32-design-of-prober-agent)
+      - [3.3 Design of Service Monitor Hub](#33-design-of-service-monitor-hub)
+    + [4. Monitor Web Dashboards Portal](#4-monitor-web-dashboards-portal)
+      - [4.1 Exercise Overview Dashboard](#41-exercise-overview-dashboard)
+      - [4.2 Service Health Dashboard](#42-service-health-dashboard)
+      - [4.3 Resource Availability Dashboard](#43-resource-availability-dashboard)
+      - [4.4 Information and Announcement Dashboard](#44-information-and-announcement-dashboard)
+      - [4.5 Assistance Function Dashboard](#45-assistance-function-dashboard)
+    + [5. Use Case Example](#5-use-case-example)
+      - [5.1 Monitored Cluster Overview](#51-monitored-cluster-overview)
+      - [5.2 Monitor Dashboard Overview](#52-monitor-dashboard-overview)
+
 ------
 
 ### 1. Introduction
