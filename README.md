@@ -1,6 +1,6 @@
 # Cyber Exercise Service and Resource Health Monitor
 
-us English | 
+**us English** | [cn 中文](Readme_CN.md)
 
 **Project Design Purpose** : The Cyber Exercise Service and Resource Health Monitor is designed as an integrated monitoring and observability toolset to support middle-scale cyber exercises and cyber drill events. It is designed to provide the real-time visualization software for showcasing the availability, status, and performance of resources—including hardware, virtual machines (VMs), containers, applications, and software services—throughout the lifecycle of an exercise.
 
